@@ -57,3 +57,5 @@ Then
 * <https://distill.pub/2019/visual-exploration-gaussian-processes> and refs
   linked from there, in particular:
 * <https://infallible-thompson-49de36.netlify.app>
+* This repo was inspired by a [discussion over at the sklearn issue
+  tracker](https://github.com/scikit-learn/scikit-learn/issues/22945). Thanks!
