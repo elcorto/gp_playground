@@ -411,10 +411,11 @@ if __name__ == "__main__":
 
         # posterior, predict()
         y_mean, y_cov = gp.predict(XI, return_cov=True)
-        _, y_std_ref, y_cov_ref = textbook_posterior_noise(
+        y_std_p = cov2std(y_cov)
+        y_mean_ref, y_std_ref, y_cov_ref = textbook_posterior_noise(
             X, y, noise_level=noise_level, length_scale=length_scale
         )(XI)
-        y_std_p = cov2std(y_cov)
+        np.testing.assert_allclose(y_mean, y_mean_ref, rtol=0, atol=1e-9)
         np.testing.assert_allclose(y_std_p, y_std_ref, rtol=0, atol=1e-9)
         np.testing.assert_allclose(y_cov, y_cov_ref, rtol=0, atol=1e-9)
 
@@ -428,8 +429,8 @@ if __name__ == "__main__":
             label=r"$\pm$ 2 y_std predict",
         )
 
-        # posterior, predict_noiseless()
-        _, y_cov = gp.predict(XI, return_cov=True)
+        # posterior, predict_noiseless(), re-use y_cov from above;
+        # gp.kernel_.k2.noise_level == noise_level (fixed)
         y_cov -= np.eye(XI.shape[0]) * gp.kernel_.k2.noise_level
         y_std_pn = cov2std(y_cov)
         _, y_std_ref, y_cov_ref = textbook_posterior(
