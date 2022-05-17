@@ -12,14 +12,13 @@ Use Gaussian RBF (squared exponential) kernel. Show the difference between
 To ensure accurate comparisons, we
 
 * skip param optimization and instead fix `length_scale` (kernel) and
-  `noise_level` (likelihood) b/c
+  `noise_level` (likelihood) because
   * testing correct prediction code paths is orthogonal to how kernel params
     and the likelihood `noise_level` are obtained
   * codes use different optimizers and/or convergence thresholds and/or start
-    values
-  * optimized `length_scale` and `noise_level` may carry numerical noise
-  * we'd need to check whether `length_scale` and `noise_level` are from the
-    same optimum of the log marginal likelihood
+    values, so optimized params might not be
+    * from the same (local) optimum of the log marginal likelihood
+    * equal enough numerically
 * skip code-internal data normalization
 * set regularization defaults to zero where needed to ensure that we only add
   `noise_level` to the kernel matrix diag
