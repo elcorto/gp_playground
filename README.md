@@ -2,7 +2,7 @@
 
 * Rasmussen & Williams (R&W 2006) textbook equations
 * [tinygp](https://github.com/dfm/tinygp) 0.2.2 (also wins price for best API!)
-* sklearn 1.1.dev0
+* sklearn 1.1.0
 * GPy 1.10.0
 * gpytorch 1.6.0
 
@@ -48,7 +48,7 @@ Then
 
 ```
 (gp_pred_comp) $ pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
-(gp_pred_comp) $ pip install tinygp Gpy sklearn gpytorch matplotlib
+(gp_pred_comp) $ pip install tinygp Gpy scikit-learn gpytorch matplotlib
 ```
 
 # Resources
