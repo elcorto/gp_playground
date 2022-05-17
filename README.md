@@ -1,6 +1,6 @@
 # Compare GP prediction APIs
 
-* Rasmussen & Williams (R&W 2006) textbook equations, <http://www.gaussianprocess.org/gpml>
+* Rasmussen & Williams (R&W 2006) textbook equations
 * [tinygp](https://github.com/dfm/tinygp) 0.2.2 (also wins price for best API!)
 * sklearn 1.1.dev0
 * GPy 1.10.0
@@ -26,7 +26,10 @@ To ensure accurate comparisons, we
 
 At the very end, we do a `length_scale` optimization using `sklearn` and two
 noise cases with fixed `noise_level`: interpolation (`noise_level` = 0) and
-regression (`noise_level` > 0) and for each predict vs. predict_noiseless.
+regression (`noise_level` > 0) and for each predict vs. predict_noiseless,
+which results in a plot like this.
+
+![](pics/gp.png)
 
 # Install packages
 
@@ -47,3 +50,10 @@ Then
 (gp_pred_comp) $ pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
 (gp_pred_comp) $ pip install tinygp Gpy sklearn gpytorch matplotlib
 ```
+
+# Resources
+
+* [Rasmussen & Williams (R&W 2006) textbook](http://www.gaussianprocess.org/gpml)
+* <https://distill.pub/2019/visual-exploration-gaussian-processes> and refs
+  linked from there, in particular:
+* <https://infallible-thompson-49de36.netlify.app>

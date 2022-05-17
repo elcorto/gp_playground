@@ -343,10 +343,11 @@ if __name__ == "__main__":
     # =========================================================================
 
     import matplotlib.pyplot as plt
+    plt.rcParams["figure.autolayout"] = True
+    plt.rcParams['font.size'] = 13
 
     from sklearn.preprocessing import StandardScaler
 
-    plt.rcParams["figure.autolayout"] = True
 
     def gt_func(x):
         """Ground truth"""
