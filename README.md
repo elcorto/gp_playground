@@ -1,53 +1,69 @@
 # Compare GP prediction APIs
 
+We test calculating GP prior and posterior predictions using
+
 * Rasmussen & Williams (R&W 2006) textbook equations
-* [tinygp](https://github.com/dfm/tinygp) 0.2.2 (also wins price for best API!)
+* [tinygp](https://github.com/dfm/tinygp) 0.2.2
 * sklearn 1.1.0
 * GPy 1.10.0
 * gpytorch 1.6.0
 
-We use the Gaussian RBF (squared exponential) covariance function.
+using the Gaussian RBF (squared exponential) covariance ("kernel") function
+
+$$\exp\left(-\frac{\lVert\mathbf x_i - \mathbf x_j\rVert_2^2}{2 \ell^2}\right)$$
+
+with random $D$-dimensional data points $\mathbf x_i\in\mathbb R^D$ and
+targets $y_i\in\mathbb R$.
+
+Notation:
+
+* kernel length scale parameter: $\ell$ = `length_scale` (as in sklearn)
+* likelihood variance: $\sigma_n^2$ = `noise_level` (as in sklearn)
+* posterior predictive variance: $\sigma^2$
 
 We show the difference between "noisy" and "noiseless" predictions w.r.t. the
 covariance matrix and how to obtain both with the different libraries listed
-above. In short, when learning a noise model (the likelihood variance
-(`noise_level`) is nonzero, e.g. using a `WhiteKernel` component in `sklearn`),
-then there are two flavors of the posterior predictive's covariance matrix.
-Borrowing from the `GPy` library's naming scheme, we have
+above. The textbook equations serve as a reference. In short, when learning a
+noise model (the likelihood variance $\sigma_n^2$ is nonzero, e.g. using a
+`WhiteKernel` component in `sklearn`), then there are two flavors of the
+posterior predictive's covariance matrix. Borrowing from the `GPy` library's
+naming scheme, we have
 
-* `predict`: `cov = cov(f*) + noise_level * I`
-* `predict_noiseless`: `cov = cov(f*)`
+* `predict_noiseless`: $\Sigma = \text{cov}(\mathbf f_*)$
+* `predict`: $\Sigma = \text{cov}(\mathbf f_*) + \sigma_n^2\mathbf I$
 
-where `cov(f*)` is the posterior predictive covariance matrix (R&W 2006, eq.
-2.24) and `I` is the identity matrix. When doing interpolation
-(`noise_level`=0) then both are equal.
+where $\text{cov}(\mathbf f_*)$ is the posterior predictive covariance matrix
+(R&W 2006, eq. 2.24). When doing interpolation ($\sigma_n=0$) then both
+$\Sigma$ matrices are equal. $\ell$ and $\sigma_n^2$ are usually the result of
+"fitting the GP model to data", which means optimizing the GP's log marginal
+likelihood as a function of both (e.g. what `sklearn`'s `GaussianProcessRegressor` does
+by default if we don't set `optimizer=None`).
 
 To ensure accurate comparisons, we
 
-* skip param optimization and instead fix `length_scale` (kernel) and
-  `noise_level` (likelihood) because
-  * testing correct prediction code paths is orthogonal to how kernel params
-    and the likelihood `noise_level` are obtained
+* skip param optimization and instead fix $\ell$ (kernel) and
+  $\sigma_n^2$ (likelihood) because
+  * testing correct prediction code paths is orthogonal to how those are obtained
   * codes use different optimizers and/or convergence thresholds and/or start
     values, so optimized params might not be
     * from the same (local) optimum of the log marginal likelihood
     * equal enough numerically
 * skip code-internal data normalization
 * set regularization defaults to zero where needed to ensure that we only add
-  `noise_level` to the kernel matrix diag
+  $\sigma_n^2$ to the kernel matrix diag
 
-At the very end, we do a `length_scale` optimization using `sklearn` and two
-noise cases with fixed `noise_level`: interpolation (`noise_level` = 0) and
-regression (`noise_level` > 0) and for each `predict` vs. `predict_noiseless`,
+At the very end, we do a $\ell$ optimization using 1$D$ toy data and `sklearn`
+for two noise cases with fixed $\sigma_n^2$: interpolation ($\sigma_n$ = 0) and
+regression ($\sigma_n$ > 0) and for each `predict` vs. `predict_noiseless`,
 which results in a plot like this.
 
 ![](pics/gp.png)
 
-The difference in `y_std` between `predict` vs. `predict_noiseless` is not
-constant even though the constant `noise_level` is added to the diagonal
-because of the `sqrt()` in
+The difference in $\sigma$ (`y_std`) between `predict` vs. `predict_noiseless`
+is not constant even though the constant $\sigma_n^2$ is added to the diagonal
+because of the $\sqrt{\cdot}$ in
 
-`y_std = sqrt(diag(cov(f*) + noise_level * I))` .
+$$\sigma = \sqrt{\text{diag}(\text{cov}(\mathbf f_*) + \sigma_n^2\mathbf I)}$$
 
 # Install packages
 

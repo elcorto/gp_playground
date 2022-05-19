@@ -112,8 +112,6 @@ if __name__ == "__main__":
 
     # =========================================================================
     # tinygp
-    #
-    # .. also wins price for best API!
     # =========================================================================
     import jax
 
@@ -343,11 +341,20 @@ if __name__ == "__main__":
     # =========================================================================
 
     import matplotlib.pyplot as plt
+
     plt.rcParams["figure.autolayout"] = True
-    plt.rcParams['font.size'] = 13
+    plt.rcParams["font.size"] = 18
 
     from sklearn.preprocessing import StandardScaler
 
+    def transform_labels(name):
+        lmap = dict(
+            noise_level=r"$\sigma_n^2$",
+            length_scale=r"$\ell$",
+            y_std=r"$\sigma$",
+            y_mean=r"$\mu$",
+        )
+        return lmap.get(name, name)
 
     def gt_func(x):
         """Ground truth"""
@@ -395,7 +402,8 @@ if __name__ == "__main__":
         length_scale = gp.kernel_.k1.length_scale
 
         axs[0, icol].set_title(
-            f"{noise_level=} length_scale={length_scale:.5f}"
+            f"{transform_labels('noise_level')}={noise_level}   "
+            f"{transform_labels('length_scale')}={length_scale:.5f}"
         )
         ##axs[0, icol].plot(xi, gp.sample_y(XI, 10), color="tab:gray", alpha=0.3)
         # hack for getting lablels right
@@ -419,14 +427,17 @@ if __name__ == "__main__":
         np.testing.assert_allclose(y_std_p, y_std_ref, rtol=0, atol=1e-9)
         np.testing.assert_allclose(y_cov, y_cov_ref, rtol=0, atol=1e-9)
 
-        axs[0, icol].plot(xi, y_mean, lw=3, color="tab:red", label="y_mean")
+        y_std_label = transform_labels("y_std")
+        axs[0, icol].plot(
+            xi, y_mean, lw=3, color="tab:red", label=transform_labels("y_mean")
+        )
         axs[0, icol].fill_between(
             xi,
             y_mean - 2 * y_std_p,
             y_mean + 2 * y_std_p,
             alpha=0.1,
             color="tab:cyan",
-            label=r"$\pm$ 2 y_std predict",
+            label=rf"$\pm$ 2 {y_std_label} predict",
         )
 
         # posterior, predict_noiseless(), re-use y_cov from above;
@@ -445,23 +456,31 @@ if __name__ == "__main__":
             y_mean + 2 * y_std_pn,
             alpha=0.1,
             color="tab:orange",
-            label=r"$\pm$ 2 y_std predict_noiseless",
+            label=rf"$\pm$ 2 {y_std_label} predict_noiseless",
         )
 
         axs[0, icol].plot(x, y, "o", ms=10)
 
-        axs[1, icol].plot(xi, y_std_p, color="tab:cyan", label="y_std predict")
         axs[1, icol].plot(
-            xi, y_std_pn, color="tab:orange", label="y_std predict_noiseless"
+            xi, y_std_p, color="tab:cyan", label=f"{y_std_label} predict"
+        )
+        axs[1, icol].plot(
+            xi,
+            y_std_pn,
+            color="tab:orange",
+            label=f"{y_std_label} predict_noiseless",
         )
         axs[1, icol].set_ylim(-0.1, 1.1)
 
         axs[2, icol].plot(
-            xi, y_std_p - y_std_pn, label="y_std predict - predict_noiseless"
+            xi,
+            y_std_p - y_std_pn,
+            label=f"{y_std_label} predict - predict_noiseless",
         )
         axs[2, icol].set_ylim(-0.1, 0.3)
 
     for ax in axs[:, 1]:
         ax.legend()
 
+    ##fig.savefig("pics/gp.png")
     plt.show()
