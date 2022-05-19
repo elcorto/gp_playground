@@ -6,8 +6,21 @@
 * GPy 1.10.0
 * gpytorch 1.6.0
 
-Use Gaussian RBF (squared exponential) kernel. Show the difference between
-"noisy" and "noiseless" predictions.
+We use the Gaussian RBF (squared exponential) covariance function.
+
+We show the difference between "noisy" and "noiseless" predictions w.r.t. the
+covariance matrix and how to obtain both with the different libraries listed
+above. In short, when learning a noise model (the likelihood variance
+(`noise_level`) is nonzero, e.g. using a `WhiteKernel` component in `sklearn`),
+then there are two flavors of the posterior predictive's covariance matrix.
+Borrowing from the `GPy` library's naming scheme, we have
+
+* `predict`: `cov = cov(f*) + noise_level * I`
+* `predict_noiseless`: `cov = cov(f*)`
+
+where `cov(f*)` is the posterior predictive covariance matrix (R&W 2006, eq.
+2.24) and `I` is the identity matrix. When doing interpolation
+(`noise_level`=0) then both are equal.
 
 To ensure accurate comparisons, we
 
@@ -25,10 +38,16 @@ To ensure accurate comparisons, we
 
 At the very end, we do a `length_scale` optimization using `sklearn` and two
 noise cases with fixed `noise_level`: interpolation (`noise_level` = 0) and
-regression (`noise_level` > 0) and for each predict vs. predict_noiseless,
+regression (`noise_level` > 0) and for each `predict` vs. `predict_noiseless`,
 which results in a plot like this.
 
 ![](pics/gp.png)
+
+The difference in `y_std` between `predict` vs. `predict_noiseless` is not
+constant even though the constant `noise_level` is added to the diagonal
+because of the `sqrt()` in
+
+`y_std = sqrt(diag(cov(f*) + noise_level * I))` .
 
 # Install packages
 
