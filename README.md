@@ -62,11 +62,13 @@ else
 $ python3 -m venv gp_pred_comp && . ./gp_pred_comp/bin/activate
 ```
 
-Then
+Then install some variant of torch (CPU, GPU) plus the packages that we test
+here. The torch install line is just an example, please check the pytorch
+website for more.
 
 ```
 (gp_pred_comp) $ pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
-(gp_pred_comp) $ pip install tinygp Gpy scikit-learn gpytorch matplotlib
+(gp_pred_comp) $ pip install -r requirements.txt
 ```
 
 # Resources

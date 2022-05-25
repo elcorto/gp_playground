@@ -1,0 +1,10 @@
+# See README
+##torch
+
+tinygp
+Gpy
+scikit-learn
+gpytorch
+matplotlib
+
+# vim:ft=conf
