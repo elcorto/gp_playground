@@ -8,9 +8,10 @@ We test calculating GP prior and posterior predictions using
 * GPy 1.10.0
 * gpytorch 1.6.0
 
-using the Gaussian RBF (squared exponential) covariance ("kernel") function
+using the Gaussian radial basis function (a.k.a. squared exponential)
+as covariance ("kernel") function
 
-$$\exp\left(-\frac{\lVert\mathbf x_i - \mathbf x_j\rVert_2^2}{2 \ell^2}\right)$$
+$$k(\mathbf x_i, \mathbf x_j) = \exp\left(-\frac{\lVert\mathbf x_i - \mathbf x_j\rVert_2^2}{2 \ell^2}\right)$$
 
 with random $D$-dimensional data points $\mathbf x_i\in\mathbb R^D$ and
 targets $y_i\in\mathbb R$.
@@ -24,10 +25,9 @@ Notation:
 We show the difference between "noisy" and "noiseless" predictions w.r.t. the
 covariance matrix and how to obtain both with the different libraries listed
 above. The textbook equations serve as a reference. In short, when learning a
-noise model (the likelihood variance $\sigma_n^2$ is nonzero, e.g. using a
-`WhiteKernel` component in `sklearn`), then there are two flavors of the
-posterior predictive's covariance matrix. Borrowing from the `GPy` library's
-naming scheme, we have
+noise model ($\sigma_n^2>0$, e.g. using a `WhiteKernel` component in
+`sklearn`), then there are two flavors of the posterior predictive's covariance
+matrix. Borrowing from the `GPy` library's naming scheme, we have
 
 * `predict_noiseless`: $\Sigma = \text{cov}(\mathbf f_*)$
 * `predict`: $\Sigma = \text{cov}(\mathbf f_*) + \sigma_n^2\mathbf I$
@@ -36,8 +36,8 @@ where $\text{cov}(\mathbf f_*)$ is the posterior predictive covariance matrix
 (R&W 2006, eq. 2.24). When doing interpolation ($\sigma_n=0$) then both
 $\Sigma$ matrices are equal. $\ell$ and $\sigma_n^2$ are usually the result of
 "fitting the GP model to data", which means optimizing the GP's log marginal
-likelihood as a function of both (e.g. what `sklearn`'s `GaussianProcessRegressor` does
-by default if we don't set `optimizer=None`).
+likelihood as a function of both (e.g. what `sklearn`'s
+`GaussianProcessRegressor` does by default when `optimizer != None`).
 
 To ensure accurate comparisons, we
 
@@ -59,7 +59,7 @@ which results in a plot like this.
 
 ![](pics/gp.png)
 
-The difference in $\sigma$ (`y_std`) between `predict` vs. `predict_noiseless`
+The difference in $\sigma$ between `predict` vs. `predict_noiseless`
 is not constant even though the constant $\sigma_n^2$ is added to the diagonal
 because of the $\sqrt{\cdot}$ in
 
