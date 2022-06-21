@@ -13,8 +13,8 @@ as covariance ("kernel") function
 
 $$k(\mathbf x_i, \mathbf x_j) = \exp\left(-\frac{\lVert\mathbf x_i - \mathbf x_j\rVert_2^2}{2 \ell^2}\right)$$
 
-with random $D$-dimensional data points $\mathbf x_i\in\mathbb R^D$ and
-targets $y_i\in\mathbb R$.
+with random data inputs $\mathbf x_i \in \mathbb R^D$ and targets
+$y_i \in \mathbb R$.
 
 Notation:
 
