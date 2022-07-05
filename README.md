@@ -34,7 +34,7 @@ matrix. Borrowing from the `GPy` library's naming scheme, we have
 
 where $\text{cov}(\mathbf f_*)$ is the posterior predictive covariance matrix
 (R&W 2006, eq. 2.24). When doing interpolation ($\sigma_n=0$) then both
-$\Sigma$ matrices are equal.
+$\Sigma$ matrices are equal. In both cases $\sigma = \sqrt{\text{diag}(\Sigma)}$.
 
 $\ell$ and $\sigma_n^2$ are usually the result of "fitting the GP model to
 data", which means optimizing the GP's log marginal likelihood as a function of
