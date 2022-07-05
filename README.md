@@ -34,10 +34,12 @@ matrix. Borrowing from the `GPy` library's naming scheme, we have
 
 where $\text{cov}(\mathbf f_*)$ is the posterior predictive covariance matrix
 (R&W 2006, eq. 2.24). When doing interpolation ($\sigma_n=0$) then both
-$\Sigma$ matrices are equal. $\ell$ and $\sigma_n^2$ are usually the result of
-"fitting the GP model to data", which means optimizing the GP's log marginal
-likelihood as a function of both (e.g. what `sklearn`'s
-`GaussianProcessRegressor` does by default when `optimizer != None`).
+$\Sigma$ matrices are equal.
+
+$\ell$ and $\sigma_n^2$ are usually the result of "fitting the GP model to
+data", which means optimizing the GP's log marginal likelihood as a function of
+both (e.g. what `sklearn`'s `GaussianProcessRegressor` does by default when
+`optimizer != None`).
 
 To ensure accurate comparisons, we
 
