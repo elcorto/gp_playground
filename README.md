@@ -2,11 +2,11 @@
 
 We test calculating GP prior and posterior predictions using
 
-* Rasmussen & Williams (R&W 2006) textbook equations
-* [tinygp](https://github.com/dfm/tinygp) 0.2.2
-* sklearn 1.1.0
-* GPy 1.10.0
-* gpytorch 1.6.0
+* [Rasmussen & Williams (R&W 2006) textbook equations](http://gaussianprocess.org/gpml/chapters)
+* [tinygp](https://github.com/dfm/tinygp)
+* [sklearn](https://scikit-learn.org)
+* [GPy](https://github.com/SheffieldML/GPy)
+* [gpytorch](https://gpytorch.ai)
 
 using the Gaussian radial basis function (a.k.a. squared exponential)
 as covariance ("kernel") function
@@ -91,7 +91,6 @@ website for more.
 
 # Resources
 
-* [Rasmussen & Williams (R&W 2006) textbook](http://www.gaussianprocess.org/gpml)
 * <https://distill.pub/2019/visual-exploration-gaussian-processes> and refs
   linked from there, in particular:
 * <https://infallible-thompson-49de36.netlify.app>
