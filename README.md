@@ -1,20 +1,30 @@
 # Compare GP prediction APIs
 
+This project is purely educational and has two purposes:
+
+* Show how to use the API of different GP implementations to perform the same
+  operation
+* Show the difference between noisy and noiseless prediction
+
 We test calculating GP prior and posterior predictions using
 
-* [Rasmussen & Williams (R&W 2006) textbook equations](http://gaussianprocess.org/gpml/chapters)
 * [tinygp](https://github.com/dfm/tinygp)
 * [sklearn](https://scikit-learn.org)
 * [GPy](https://github.com/SheffieldML/GPy)
 * [gpytorch](https://gpytorch.ai)
 
-using the Gaussian radial basis function (a.k.a. squared exponential)
+We perform the same calculations with all libraries and compare to the results
+obtained by a straight forward implementation of the textbook equations from
+[Rasmussen & Williams (R&W 2006)](http://gaussianprocess.org/gpml/chapters).
+
+We use the Gaussian radial basis function (a.k.a. squared exponential)
 as covariance ("kernel") function
 
 $$k(\mathbf x_i, \mathbf x_j) = \exp\left(-\frac{\lVert\mathbf x_i - \mathbf x_j\rVert_2^2}{2 \ell^2}\right)$$
 
 with random data inputs $\mathbf x_i \in \mathbb R^D$ and targets
 $y_i \in \mathbb R$.
+
 
 Notation:
 
@@ -55,8 +65,8 @@ To ensure accurate comparisons, we
   $\sigma_n^2$ to the kernel matrix diag
 
 At the very end, we do a $\ell$ optimization using 1$D$ toy data and `sklearn`
-for two noise cases with fixed $\sigma_n^2$: interpolation ($\sigma_n$ = 0) and
-regression ($\sigma_n$ > 0) and for each `predict` vs. `predict_noiseless`,
+for two noise cases with fixed $\sigma_n^2$: interpolation ($\sigma_n = 0$) and
+regression ($\sigma_n > 0$) and for each `predict` vs. `predict_noiseless`,
 which results in a plot like this.
 
 ![](pics/gp.png)
@@ -76,7 +86,7 @@ $ mkvirtualenv gp_pred_comp
 
 else
 
-```
+```sh
 $ python3 -m venv gp_pred_comp && . ./gp_pred_comp/bin/activate
 ```
 
@@ -84,7 +94,7 @@ Then install some variant of torch (CPU, GPU) plus the packages that we test
 here. The torch install line is just an example, please check the pytorch
 website for more.
 
-```
+```sh
 (gp_pred_comp) $ pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
 (gp_pred_comp) $ pip install -r requirements.txt
 ```
