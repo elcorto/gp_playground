@@ -185,12 +185,9 @@ def gt_func(x):
     return np.sin(x) * np.exp(-0.1 * x) + 10
 
 
-def noise(x, rng, noise_level=0.1):
-    """Gaussian noise."""
-    # variable noise
-    ##return rng.normal(loc=0, scale=noise_level, size=x.shape[0]) * np.exp(0.1*x) / 5
-    # constant noise
-    return rng.normal(loc=0, scale=noise_level, size=x.shape[0])
+def gaussian_noise(x, rng, sigma=0.1):
+    """Constant Gaussian noise."""
+    return rng.normal(loc=0, scale=sigma, size=x.shape[0])
 
 
 def transform_1d(scaler, x):
@@ -333,13 +330,14 @@ if __name__ == "__main__":
     # Equidistant x points: constant y_std (from GP) in-distribution
     ##x = np.linspace(0, 30, 60)
     #
-    # Random x points for varying y_std. For some reason the results vary
-    # depending on whether we sort the points. Shouldn't be the case?
-    ##x = rng.uniform(0, 30, 60)
-    x = np.sort(rng.uniform(0, 30, 60), axis=0)
+    # Random x points for varying y_std. Also create a gap in the middle to
+    # show high y_std.
+    x1 = np.sort(rng.uniform(0, 12, 50), axis=0)
+    x2 = np.sort(rng.uniform(20, 32, 50), axis=0)
+    x = np.concatenate((x1, x2))
     xspan = x.max() - x.min()
     xi = np.linspace(x.min() - 0.3 * xspan, x.max() + 0.3 * xspan, len(x) * 10)
-    y = gt_func(x) + noise(x, rng, noise_level=0.1)
+    y = gt_func(x) + gaussian_noise(x, rng, sigma=0.075)
     yi_gt = gt_func(xi)
 
     # Data scaling.
@@ -355,12 +353,12 @@ if __name__ == "__main__":
     # -------------------------------------------------------------------------
     # Sanity check KernelRidge API: alpha added to diag of kernel matrix.
     # -------------------------------------------------------------------------
-    param_p = 1
-    param_r = 0.1
-    kp = RBF(length_scale=param_p)
-    f_krr_1 = KernelRidge(alpha=param_r, kernel=kp).fit(X, y)
+    length_scale = 1
+    noise_level = 0.1
+    kp = RBF(length_scale=length_scale)
+    f_krr_1 = KernelRidge(alpha=noise_level, kernel=kp).fit(X, y)
     f_krr_2 = KernelRidge(alpha=0, kernel="precomputed").fit(
-        kp(X, X) + np.eye(X.shape[0]) * param_r, y
+        kp(X, X) + np.eye(X.shape[0]) * noise_level, y
     )
 
     np.testing.assert_allclose(f_krr_1.dual_coef_, f_krr_2.dual_coef_)
@@ -368,18 +366,19 @@ if __name__ == "__main__":
 
     # -------------------------------------------------------------------------
     # Show that WhiteKernel(noise_level=) is equal to regularization param
-    # alpha=param_r in both sklearn models. No hyperopt just yet
-    # (GaussianProcessRegressor(optimizer=None)). Use fixed hyper params=[p,r].
+    # alpha=noise_level in both sklearn models. No hyperopt just yet
+    # (GaussianProcessRegressor(optimizer=None)). Use fixed hyper
+    # params=[length_scale,noise_level].
     # -------------------------------------------------------------------------
     f_gp_kp = GaussianProcessRegressor(
         kernel=kp,
         optimizer=None,
         normalize_y=False,
-        alpha=param_r,
+        alpha=noise_level,
     ).fit(X, y)
 
     f_gp_kpr = GaussianProcessRegressor(
-        kernel=RBF(length_scale=param_p) + WhiteKernel(noise_level=param_r),
+        kernel=RBF(length_scale=length_scale) + WhiteKernel(noise_level=noise_level),
         optimizer=None,
         normalize_y=False,
         alpha=0,
@@ -392,11 +391,11 @@ if __name__ == "__main__":
     np.testing.assert_allclose(f_gp_kp.predict(XI), f_krr_1.predict(XI))
 
     # -------------------------------------------------------------------------
-    # Non-zero mean for fixed p and r.
+    # Non-zero mean for fixed length_scale and noise_level.
     # -------------------------------------------------------------------------
-    f_krr_nzm = KernelRidge(alpha=param_r, kernel=kp).fit(X, y + 1000)
+    f_krr_nzm = KernelRidge(alpha=noise_level, kernel=kp).fit(X, y + 1000)
     f_gp_nzm = GaussianProcessRegressor(
-        kernel=RBF(length_scale=param_p) + WhiteKernel(noise_level=param_r),
+        kernel=RBF(length_scale=length_scale) + WhiteKernel(noise_level=noise_level),
         optimizer=None,
         normalize_y=False,
         alpha=0,
@@ -408,9 +407,9 @@ if __name__ == "__main__":
     # -------------------------------------------------------------------------
     # hyperopt gp
     #
-    # Show 4 ways to opt [p,r]. One using the default optimizer for
-    # reference. Then 3 ways to use the custom differential evolution (DE) based one
-    # using the HyperOpt helper class.
+    # Show 4 ways to opt [length_scale, noise_level]. One using the default
+    # optimizer for reference. Then 3 ways to use the custom differential
+    # evolution (DE) based one using the HyperOpt helper class.
     #
     # DE results must be exactly equal if we use logscale=True, i.e. what
     # GaussianProcessRegressor does internally, so these tests only check
@@ -422,9 +421,9 @@ if __name__ == "__main__":
     # best DE result where we assume that we're close to the global opt and
     # things are convex-ish.
     # -------------------------------------------------------------------------
-    param_p_bounds = (1e-5, 10)
-    param_r_bounds = (1e-10, 10)
-    bounds = [param_p_bounds, param_r_bounds]
+    length_scale_bounds = (1e-5, 10)
+    noise_level_bounds = (1e-10, 10)
+    bounds = [length_scale_bounds, noise_level_bounds]
 
     de_kwds_common = dict(
         polish=True,
@@ -446,9 +445,9 @@ if __name__ == "__main__":
     #
     ##ic("opt gp internal default RBF + WhiteKernel ...")
     f_gp_0 = GaussianProcessRegressor(
-        kernel=RBF(length_scale_bounds=param_p_bounds)
+        kernel=RBF(length_scale_bounds=length_scale_bounds)
         + WhiteKernel(
-            noise_level_bounds=param_r_bounds,
+            noise_level_bounds=noise_level_bounds,
         ),
         n_restarts_optimizer=5,
         normalize_y=False,
@@ -466,9 +465,9 @@ if __name__ == "__main__":
     #
     ##ic("opt gp internal RBF + WhiteKernel ...")
     f_gp_1 = GaussianProcessRegressor(
-        kernel=RBF(length_scale_bounds=param_p_bounds)
+        kernel=RBF(length_scale_bounds=length_scale_bounds)
         + WhiteKernel(
-            noise_level_bounds=param_r_bounds,
+            noise_level_bounds=noise_level_bounds,
         ),
         n_restarts_optimizer=0,
         optimizer=gp_optimizer,
@@ -581,46 +580,37 @@ if __name__ == "__main__":
     # -------------------------------------------------------------------------
     plt.rcParams["figure.autolayout"] = True
     plt.rcParams["font.size"] = 18
+    savefig = False
 
     yi_krr = f_krr.predict(XI)
     yi_gp, yi_gp_std = f_gp_1.predict(XI, return_std=True)
     ##yi_gp, yi_gp_std = f_gp_3_nolog.predict(XI, return_std=True)
 
     fig1, axs = plt.subplots(
-        nrows=3,
+        nrows=2,
         sharex=True,
-        gridspec_kw=dict(height_ratios=[1, 0.3, 0.3]),
-        figsize=(15, 10),
+        gridspec_kw=dict(height_ratios=[1, 0.2]),
+        figsize=(15, 8),
     )
-    axs[0].plot(x, y, "o", color="tab:gray", alpha=0.5)
-    axs[0].plot(xi, yi_krr, label="krr", color="tab:red")
-    axs[0].plot(xi, yi_gp, label="gp", color="tab:green")
+    axs[0].plot(x, y, "o", color="tab:gray")
+    axs[0].plot(xi, yi_krr, label="KRR", color="tab:red", lw=2)
+    axs[0].plot(xi, yi_gp, label="GP", color="tab:green", lw=2)
     axs[0].fill_between(
         xi,
         yi_gp - 2 * yi_gp_std,
         yi_gp + 2 * yi_gp_std,
-        alpha=0.2,
-        color="tab:gray",
-        label=r"gp $\pm 2\,\sigma$",
+        alpha=0.1,
+        color="tab:green",
+        label=r"GP $\pm 2\,\sigma$",
     )
 
     yspan = y.max() - y.min()
     axs[0].plot(
-        xi, yi_gt, label="ground truth g(x)", color="tab:gray", alpha=0.5
+        xi, yi_gt, label="Ground truth g(x)", color="tab:gray", alpha=0.5
     )
-    axs[0].set_ylim(y.min() - 0.1 * yspan, y.max() + 0.1 * yspan)
+    axs[0].set_ylim(y.min() - 0.5 * yspan, y.max() + 0.5 * yspan)
 
-    diff_krr = yi_gt - yi_krr
-    diff_gp = yi_gt - yi_gp
-    msk = (xi > x.min()) & (xi < x.max())
-    lo = min(diff_krr[msk].min(), diff_gp[msk].min())
-    hi = max(diff_krr[msk].max(), diff_gp[msk].max())
-    span = hi - lo
-    axs[1].plot(xi, diff_krr, label="krr - g(x)", color="tab:red")
-    axs[1].plot(xi, diff_gp, label="gp - g(x)", color="tab:green")
-    axs[1].set_ylim((lo - 0.1 * span, hi + 0.1 * span))
-
-    axs[2].plot(xi, yi_gp_std, label=r"gp $\sigma$")
+    axs[1].plot(xi, yi_gp_std, label=r"GP $\sigma$")
 
     for ax in axs:
         ax.legend()
@@ -631,22 +621,22 @@ if __name__ == "__main__":
     nsample = 50
     nlevels = 50
     z_log = False
-    param_p = np.logspace(*np.log10(param_p_bounds), nsample)
-    param_r = np.logspace(*np.log10(param_r_bounds), nsample)
-    grid = np.array(list(itertools.product(param_p, param_r)))
+    length_scale = np.logspace(*np.log10(length_scale_bounds), nsample)
+    noise_level = np.logspace(*np.log10(noise_level_bounds), nsample)
+    grid = np.array(list(itertools.product(length_scale, noise_level)))
     fig2, axs2d = plt.subplots(nrows=1, ncols=2, figsize=(18, 8))
     fig3, axs3d = plt.subplots(
         nrows=1, ncols=2, figsize=(18, 8), subplot_kw={"projection": "3d"}
     )
 
     # zmax for linear z scale (see below)
-    cases = dict(gp=dict(zmax=3e-10), krr=dict(zmax=1e-5))
+    cases = dict(gp=dict(zmax=1e-9), krr=dict(zmax=5e-5))
 
     for icol, name in enumerate(cases):
         ax2d = axs2d[icol]
         ax3d = axs3d[icol]
-        ax2d.set_title(name)
-        ax3d.set_title(name)
+        ax2d.set_title(name.upper())
+        ax3d.set_title(name.upper())
         if name == "krr":
             ho = HyperOptKRR(
                 bounds=bounds,
@@ -698,7 +688,7 @@ if __name__ == "__main__":
             zz /= zz.max()
             zz = np.ma.masked_where(zz > zmax, zz)
 
-        _X, _Y = np.meshgrid(param_p, param_r, indexing="ij")
+        _X, _Y = np.meshgrid(length_scale, noise_level, indexing="ij")
         Z = zz.reshape((_X.shape[0], _X.shape[1]))
 
         if z_log:
@@ -725,11 +715,14 @@ if __name__ == "__main__":
         ax2d.plot(*params_opt, "o", ms=10, color="white")
         if name == "gp":
             ax2d.plot(*params_gp_0, "*", ms=10, color="black")
-        ax2d.set_xlabel(r"$p$")
-        ax2d.set_ylabel(r"$r$")
-        ax3d.set_xlabel(r"$\log_{10}(p)$")
-        ax3d.set_ylabel(r"$\log_{10}(r)$")
+        ax2d.set_xlabel(r"$\ell$")
+        ax2d.set_ylabel(r"$\sigma_n^2$")
+        ax3d.set_xlabel(r"$\log_{10}(\ell)$")
+        ax3d.set_ylabel(r"$\log_{10}(\sigma_n^2)$")
         ax2d.set_xscale("log")
         ax2d.set_yscale("log")
 
+    if savefig:
+        fig1.savefig("gp_krr_pred.pdf")
+        fig2.savefig("gp_krr_hyperopt_objective.pdf")
     plt.show()
