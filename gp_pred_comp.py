@@ -23,6 +23,19 @@ def cov2std(y_cov):
     return np.sqrt(np.diag(y_cov))
 
 
+def sample_y(y_mean, y_cov, n_samples=1, random_state=123):
+    """What GaussianProcessRegressor.sample_y() does, but since sklearn can't
+    do predict_noiseless() and generate noiseless samples when WhiteKernel is
+    used, it is easier to have custom sample_y code.
+
+    Re-implements core part of sklearn's sample_y(). Note that sklearn (v1.1.2)
+    still uses np.random.RandomState (other default RNG), so even with the same
+    seed, we get different samples.
+    """
+    rng = np.random.default_rng(seed=random_state)
+    return rng.multivariate_normal(y_mean, y_cov, n_samples).T
+
+
 def textbook_prior(noise_level=0, **kernel_kwds):
     """
     R&W 2006, eq. 2.17 (if noise_level=0)
@@ -336,8 +349,10 @@ if __name__ == "__main__":
 
     # =========================================================================
     # sklearn plotting, 1D data, WhiteKernel w/ fixed noise_level, optimize
-    # length_scale now, show two cases: interpolation (noise_level=0) and
-    # regression (noise_level > 0) and in each predict vs. predict_noiseless
+    # length_scale now, show three cases
+    # * interpolation (noise_level=0)
+    # * regression (noise_level > 0) predict_noiseless
+    # * regression (noise_level > 0) predict
     # =========================================================================
 
     import matplotlib.pyplot as plt
@@ -351,7 +366,8 @@ if __name__ == "__main__":
         lmap = dict(
             noise_level=r"$\sigma_n^2$",
             length_scale=r"$\ell$",
-            y_std=r"$\sigma$",
+            y_std_pn=r"$\sqrt{\mathrm{diag}(\Sigma)}$",
+            y_std_p=r"$\sqrt{\mathrm{diag}(\Sigma + \sigma_n^2\,I)}$",
             y_mean=r"$\mu$",
         )
         return lmap.get(name, name)
@@ -382,13 +398,15 @@ if __name__ == "__main__":
 
     fig, axs = plt.subplots(
         nrows=3,
-        ncols=2,
+        ncols=3,
         gridspec_kw=dict(height_ratios=[1, 0.3, 0.3]),
-        figsize=(15, 10),
+        figsize=(23, 10),
         sharex=True,
     )
 
-    for icol, noise_level in enumerate([0, 0.1]):
+    for icol, (noise_level, noise_case) in enumerate(
+        [(0, None), (0.1, "pn"), (0.1, "p")]
+    ):
         gp = GaussianProcessRegressor(
             kernel=RBF(length_scale_bounds=[1e-5, 10])
             ##+ WhiteKernel(noise_level_bounds=[1e-18, 2]),
@@ -401,13 +419,55 @@ if __name__ == "__main__":
         gp.fit(X, y)
         length_scale = gp.kernel_.k1.length_scale
 
+        # posterior, predict()
+        y_mean, y_cov_p = gp.predict(XI, return_cov=True)
+        y_std_p = cov2std(y_cov_p)
+        y_mean_ref, y_std_ref, y_cov_ref = textbook_posterior_noise(
+            X, y, noise_level=noise_level, length_scale=length_scale
+        )(XI)
+        np.testing.assert_allclose(y_mean, y_mean_ref, rtol=0, atol=1e-9)
+        np.testing.assert_allclose(y_std_p, y_std_ref, rtol=0, atol=1e-9)
+        np.testing.assert_allclose(y_cov_p, y_cov_ref, rtol=0, atol=1e-9)
+
+        # posterior, predict_noiseless(), re-use y_cov from above b/c sklearn
+        # cannot do predict_noiseless() when using WhiteKernel.
+        # gp.kernel_.k2.noise_level == noise_level (fixed)
+        y_cov_pn = y_cov_p - np.eye(XI.shape[0]) * noise_level
+        y_std_pn = cov2std(y_cov_pn)
+        _, y_std_ref, y_cov_ref = textbook_posterior(
+            X, y, noise_level=noise_level, length_scale=length_scale
+        )(XI)
+        np.testing.assert_allclose(y_std_pn, y_std_ref, rtol=0, atol=1e-9)
+        np.testing.assert_allclose(y_cov_pn, y_cov_ref, rtol=0, atol=1e-9)
+
+        samples_p = sample_y(y_mean, y_cov_p, 10, random_state=123)
+        samples_pn = sample_y(y_mean, y_cov_pn, 10, random_state=123)
+
+        y_std_p_label = transform_labels("y_std_p")
+        y_std_pn_label = transform_labels("y_std_pn")
+
+        if noise_case is None:
+            cov_title = r"$\Sigma=K'' - K'\,K^{-1}\,K'^\top$"
+            # or samples_p, deosn't matter since noise_level=0
+            samples = samples_pn
+            cov_title += "\n" + rf"$\sigma$={y_std_pn_label}"
+        elif noise_case == "pn":
+            cov_title = r"$\Sigma=K'' - K'\,(K+\sigma_n^2\,I)^{-1}\,K'^\top$"
+            cov_title += "\n" + rf"$\sigma$={y_std_pn_label}"
+            samples = samples_pn
+        elif noise_case == "p":
+            cov_title = r"$\Sigma=K'' - K'\,(K+\sigma_n^2\,I)^{-1}\,K'^\top$"
+            cov_title += "\n" + rf"$\sigma$={y_std_p_label}"
+            samples = samples_p
+        else:
+            raise ValueError(f"Illegal {noise_case=}")
+
         axs[0, icol].set_title(
             f"{transform_labels('noise_level')}={noise_level}   "
             f"{transform_labels('length_scale')}={length_scale:.5f}"
+            "\n" + cov_title
         )
-        ##axs[0, icol].plot(xi, gp.sample_y(XI, 10), color="tab:gray", alpha=0.3)
-        # hack for getting lablels right
-        samples = gp.sample_y(XI, 10)
+
         for ii, yy in enumerate(samples.T):
             axs[0, icol].plot(
                 xi,
@@ -417,70 +477,54 @@ if __name__ == "__main__":
                 label=("posterior samples" if ii == 0 else "_"),
             )
 
-        # posterior, predict()
-        y_mean, y_cov = gp.predict(XI, return_cov=True)
-        y_std_p = cov2std(y_cov)
-        y_mean_ref, y_std_ref, y_cov_ref = textbook_posterior_noise(
-            X, y, noise_level=noise_level, length_scale=length_scale
-        )(XI)
-        np.testing.assert_allclose(y_mean, y_mean_ref, rtol=0, atol=1e-9)
-        np.testing.assert_allclose(y_std_p, y_std_ref, rtol=0, atol=1e-9)
-        np.testing.assert_allclose(y_cov, y_cov_ref, rtol=0, atol=1e-9)
-
-        y_std_label = transform_labels("y_std")
         axs[0, icol].plot(
             xi, y_mean, lw=3, color="tab:red", label=transform_labels("y_mean")
         )
-        axs[0, icol].fill_between(
-            xi,
-            y_mean - 2 * y_std_p,
-            y_mean + 2 * y_std_p,
-            alpha=0.1,
-            color="tab:cyan",
-            label=rf"$\pm$ 2 {y_std_label} predict",
-        )
+        if noise_case == "p":
+            axs[0, icol].fill_between(
+                xi,
+                y_mean - 2 * y_std_p,
+                y_mean + 2 * y_std_p,
+                alpha=0.1,
+                color="tab:cyan",
+                label=rf"$\pm$ 2 {y_std_p_label}",
+            )
+            axs[1, icol].plot(
+                xi, y_std_p, color="tab:cyan", label=f"{y_std_p_label}"
+            )
+            axs[2, icol].plot(
+                xi,
+                y_std_p - y_std_pn,
+                label=f"{y_std_p_label} - {y_std_pn_label}",
+            )
+        else:
+            axs[2, icol].set_visible(False)
 
-        # posterior, predict_noiseless(), re-use y_cov from above;
-        # gp.kernel_.k2.noise_level == noise_level (fixed)
-        y_cov -= np.eye(XI.shape[0]) * gp.kernel_.k2.noise_level
-        y_std_pn = cov2std(y_cov)
-        _, y_std_ref, y_cov_ref = textbook_posterior(
-            X, y, noise_level=noise_level, length_scale=length_scale
-        )(XI)
-        np.testing.assert_allclose(y_std_pn, y_std_ref, rtol=0, atol=1e-9)
-        np.testing.assert_allclose(y_cov, y_cov_ref, rtol=0, atol=1e-9)
-
-        axs[0, icol].fill_between(
-            xi,
-            y_mean - 2 * y_std_pn,
-            y_mean + 2 * y_std_pn,
-            alpha=0.1,
-            color="tab:orange",
-            label=rf"$\pm$ 2 {y_std_label} predict_noiseless",
-        )
+        if noise_case in ["pn", None]:
+            axs[0, icol].fill_between(
+                xi,
+                y_mean - 2 * y_std_pn,
+                y_mean + 2 * y_std_pn,
+                alpha=0.1,
+                color="tab:orange",
+                label=rf"$\pm$ 2 {y_std_pn_label}",
+            )
 
         axs[0, icol].plot(x, y, "o", ms=10)
 
         axs[1, icol].plot(
-            xi, y_std_p, color="tab:cyan", label=f"{y_std_label} predict"
-        )
-        axs[1, icol].plot(
             xi,
             y_std_pn,
             color="tab:orange",
-            label=f"{y_std_label} predict_noiseless",
+            label=f"{y_std_pn_label}",
         )
-        axs[1, icol].set_ylim(-0.1, 1.1)
 
-        axs[2, icol].plot(
-            xi,
-            y_std_p - y_std_pn,
-            label=f"{y_std_label} predict - predict_noiseless",
-        )
+        axs[0, icol].set_ylim(-3, 3)
+        axs[1, icol].set_ylim(-0.1, 1.1)
         axs[2, icol].set_ylim(-0.1, 0.3)
 
-    for ax in axs[:, 1]:
-        ax.legend()
+    for ax in list(axs[0:2, 1:3].flat) + [axs[2, 2]]:
+        ax.legend(loc="upper right")
 
     ##fig.savefig("pics/gp.png")
     plt.show()
