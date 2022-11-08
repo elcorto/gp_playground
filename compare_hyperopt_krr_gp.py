@@ -245,7 +245,7 @@ def gp_optimizer(obj_func, initial_theta, bounds):
     )
     return opt_result.x, opt_result.fun
 
-
+##from sklearn.model_selection import cross_val_score
 def simple_cv(model, X, y, cv):
     """Same as
 
@@ -253,6 +253,17 @@ def simple_cv(model, X, y, cv):
 
     but much faster because we bypass the rich API of
     cross_val_score and can thus skip many many checks.
+
+    Note that the double negative in -cross_val_score() and "neg_" is needed
+    b/c of the sklearn API:
+
+    "All scorer objects follow the convention that higher return values are
+    better than lower return values. Thus metrics which measure the distance
+    between the model and the data, like metrics.mean_squared_error, are
+    available as neg_mean_squared_error which return the negated value of the
+    metric."
+
+    See https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
     """
     errs = np.empty((cv.get_n_splits(X),), dtype=float)
     for ii, tup in enumerate(cv.split(X)):
@@ -262,6 +273,7 @@ def simple_cv(model, X, y, cv):
         # MSE
         errs[ii] = np.dot(d, d) / len(d)
     return errs
+    ##return -cross_val_score(model, X, y, cv=cv, scoring="neg_mean_squared_error")
 
 
 class HyperOpt:
