@@ -39,8 +39,8 @@ def sample_y(y_mean, y_cov, n_samples=1, random_state=123):
 def textbook_prior(noise_level=0, **kernel_kwds):
     """
     R&W 2006, eq. 2.17 (if noise_level=0)
-        X*        = X_pred
-        K(X*, X*) = K_pp
+        X*        = X_pred  = X'
+        K(X*, X*) = K_pp    = K''
     """
     kern = partial(kernel, **kernel_kwds)
 
@@ -59,10 +59,10 @@ def textbook_posterior(X_train, y_train, *, noise_level=0, **kernel_kwds):
     """
     R&W 2006, eqs. 2.23, 2.24
         X         = X_train
-        X*        = X_pred
-        K(X, X)   = K_tt
-        K(X*, X)  = K_pt
-        K(X*, X*) = K_pp
+        X*        = X_pred  = X'
+        K(X, X)   = K_tt    = K
+        K(X*, X)  = K_pt    = K'
+        K(X*, X*) = K_pp    = K''
     """
 
     kern = partial(kernel, **kernel_kwds)
