@@ -16,4 +16,7 @@ scikit-learn
 gpytorch
 matplotlib
 
+# For plotting
+python-box
+
 # vim:ft=conf
