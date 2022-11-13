@@ -1,0 +1,34 @@
+##name: book
+##
+##on:
+##  push
+##
+##jobs:
+##  pages:
+##    runs-on: ubuntu-latest
+##    steps:
+##
+##      - name: checkout
+##        uses: actions/checkout@v2
+##
+##      - name: pysetup
+##        uses: actions/setup-python@v2
+##        with:
+##          python-version: "3.10"
+##
+##      - name: install
+##        run: |
+##          pip install -U pip setuptools wheel
+##          pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
+##          pip install -r requirements.txt
+##
+##      - name: build
+##        run: |
+##          sh generate-book.sh
+##
+##      - name: deploy
+##        uses: peaceiris/actions-gh-pages@v3
+##        with:
+##          github_token: ${{ secrets.GITHUB_TOKEN }}
+##          # base dir is checkout: /path/to/psweep
+##          publish_dir: book/_build/html

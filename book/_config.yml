@@ -1,0 +1,48 @@
+title: gp_playground
+author: Steve Schmerler
+copyright: "2022"
+logo: logo.png
+
+repository:
+  url: https://github.com/elcorto/gp_playground
+  path_to_book: book
+  branch: main
+
+html:
+  use_issues_button: False
+  use_repository_button: True
+
+execute:
+  exclude_patterns:
+    - '*.py'
+    ##- '*plot.md'
+    - 'notebook_test.md'
+  execute_notebooks: auto
+
+parse:
+  # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
+  myst_enable_extensions:
+    - amsmath
+    - dollarmath
+
+sphinx:
+  extra_extensions:
+    - 'sphinxcontrib.bibtex'
+  config:
+    # https://myst-nb.readthedocs.io/en/latest/configuration.html
+    #
+    # Merge multi-line prints into one (else e.g. stuff printed from icecream
+    # will be split up).
+    nb_merge_streams: True
+
+    bibtex_bibfiles:
+      - 'lit.bib'
+
+    mathjax3_config:
+      tex:
+        macros:
+          "ve": ['\boldsymbol{\mathit{#1}}', 1]
+          "ma": ['\mathbf{#1}', 1]
+          "inv": ['{#1}^{-1}', 1]
+          "trans": ['{#1}^{\top}', 1]
+          "cov": ['\mathrm{cov}']

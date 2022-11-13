@@ -1,0 +1,11 @@
+**__pycache__/
+*.ipynb
+book/_build/
+*.bak
+**.ipynb_checkpoints/
+**.mypy_cache/
+
+# Generated md:myst format notebooks
+notebook_*.md
+
+# vim:syn=conf

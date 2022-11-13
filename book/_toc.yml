@@ -1,0 +1,16 @@
+format: jb-book
+root: root
+
+parts:
+  - chapters:
+    - file: content/gp_pred_comp/intro.md
+      sections:
+        - file: content/gp_pred_comp/notebook_common.md
+        - file: content/gp_pred_comp/notebook_comp.md
+        - file: content/gp_pred_comp/notebook_plot.md
+
+  - chapters:
+    - file: content/gp_krr_hyperopt/intro.md
+      sections:
+      - file: content/gp_krr_hyperopt/notebook_comp_plot.md
+

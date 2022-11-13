@@ -1,3 +1,13 @@
+# %% [markdown]
+#
+# # Reference implementation of RW06 equations
+#
+# Here we implement simple but instructive reference code in numpy by direct
+# translation of the core equations of
+# {cite}`rasmussen_2006_GaussianProcessesMachine`.
+
+# %%
+
 from functools import partial
 
 from scipy.spatial.distance import cdist

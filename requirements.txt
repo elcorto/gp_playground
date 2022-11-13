@@ -1,22 +1,24 @@
-# Last run with
-#
-# GPy                 1.10.0
-# gpytorch            1.9.0
-# scikit-learn        1.1.2
-# tinygp              0.2.2
-# torch               1.12.1+cpu
-
-
 # See README
+# pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
 ##torch
 
+# pred comp
 tinygp
 Gpy
 scikit-learn
 gpytorch
-matplotlib
 
-# For plotting
+# Optional for gpytorch, numpy fallback
+cython
+
+# plotting
+matplotlib
 python-box
+icecream
+
+# jupyter book + tools
+jupyter-book
+jupytext
+sphinxcontrib-bibtex
 
 # vim:ft=conf
