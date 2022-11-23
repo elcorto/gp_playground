@@ -459,7 +459,7 @@ for ax in axs:
 ##fig, ax = plt.subplots()
 ##plot_gp_post(box=d_post_pn, ax=ax, set_title=False)
 ##ax.set_axis_off()
-##fig.savefig("logo.png")
+##fig.savefig("logo.png", dpi=150)
 
 if not is_interactive():
     plt.show()
