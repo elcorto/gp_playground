@@ -1,0 +1,1127 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Explore GPs and KRR with code &#8212; gp_playground</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex": {"macros": {"ve": ["\\boldsymbol{\\mathit{#1}}", 1], "ma": ["\\mathbf{#1}", 1], "inv": ["{#1}^{-1}", 1], "trans": ["{#1}^{\\top}", 1], "cov": ["\\mathrm{cov}"]}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="prev" title="Compare GPs and kernel ridge regression (KRR)" href="intro.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">gp_playground</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../root.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../gp_pred_comp/intro.html">
+   The role of noise in GPs
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../gp_pred_comp/notebook_common.html">
+     Reference implementation of RW06 equations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../gp_pred_comp/notebook_comp.html">
+     Comparison of GP libraries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../gp_pred_comp/notebook_plot.html">
+     Prior and (noisy) posterior predictions
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="intro.html">
+   Compare GPs and kernel ridge regression (KRR)
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Explore GPs and KRR with code
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<div class="menu-dropdown menu-dropdown-launch-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Launch interactive content">
+      <i class="fas fa-rocket"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://mybinder.org/v2/gh/elcorto/gp_playground/main?urlpath=tree/book/content/gp_krr_hyperopt/notebook_comp_plot.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Launch on Binder"
+>
+  
+
+<span class="headerbtn__icon-container">
+  
+    <img src="../../_static/images/logo_binder.svg">
+  </span>
+<span class="headerbtn__text-container">Binder</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/elcorto/gp_playground"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/content/gp_krr_hyperopt/notebook_comp_plot.ipynb"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download notebook file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-code"></i>
+  </span>
+<span class="headerbtn__text-container">.ipynb</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="../../_sources/content/gp_krr_hyperopt/notebook_comp_plot.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#functions-and-helpers">
+   Functions and helpers
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#data">
+   Data
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#correctness-checks-and-examples-on-how-to-play-with-optimizers">
+   Correctness checks and examples on how to play with optimizers
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#plot-gp-and-krr-predictions-after-hyperopt">
+   Plot GP and KRR predictions after hyperopt
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#plot-gp-and-krr-hyperparameter-objective-functions">
+   Plot GP and KRR hyperparameter objective functions
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Explore GPs and KRR with code</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#functions-and-helpers">
+   Functions and helpers
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#data">
+   Data
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#correctness-checks-and-examples-on-how-to-play-with-optimizers">
+   Correctness checks and examples on how to play with optimizers
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#plot-gp-and-krr-predictions-after-hyperopt">
+   Plot GP and KRR predictions after hyperopt
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#plot-gp-and-krr-hyperparameter-objective-functions">
+   Plot GP and KRR hyperparameter objective functions
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="explore-gps-and-krr-with-code">
+<h1>Explore GPs and KRR with code<a class="headerlink" href="#explore-gps-and-krr-with-code" title="Permalink to this headline">#</a></h1>
+<section id="functions-and-helpers">
+<h2>Functions and helpers<a class="headerlink" href="#functions-and-helpers" title="Permalink to this headline">#</a></h2>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">mp</span>
+
+<span class="c1">##import multiprocess as mp</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">differential_evolution</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">cm</span><span class="p">,</span> <span class="n">ticker</span><span class="p">,</span> <span class="n">colors</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.gaussian_process</span> <span class="kn">import</span> <span class="n">GaussianProcessRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.gaussian_process.kernels</span> <span class="kn">import</span> <span class="n">RBF</span><span class="p">,</span> <span class="n">WhiteKernel</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">KFold</span>
+<span class="kn">from</span> <span class="nn">sklearn.kernel_ridge</span> <span class="kn">import</span> <span class="n">KernelRidge</span>
+
+<span class="kn">from</span> <span class="nn">icecream</span> <span class="kn">import</span> <span class="n">ic</span>
+
+
+<span class="k">def</span> <span class="nf">gt_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Ground truth&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
+
+
+<span class="k">def</span> <span class="nf">gaussian_noise</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Constant Gaussian noise.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">transform_1d</span><span class="p">(</span><span class="n">scaler</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))[:,</span> <span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">de_callback</span><span class="p">(</span><span class="n">xk</span><span class="p">,</span> <span class="n">convergence</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Callback for differential_evolution that prints the best individual per</span>
+<span class="sd">    iteration.&quot;&quot;&quot;</span>
+    <span class="c1">##ic(xk)</span>
+
+
+<span class="k">def</span> <span class="nf">de_callback_logscale</span><span class="p">(</span><span class="n">xk</span><span class="p">,</span> <span class="n">convergence</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Callback for differential_evolution that prints the best individual per</span>
+<span class="sd">    iteration.</span>
+
+<span class="sd">    Since GaussianProcessRegressor&#39;s hyper optimizer code path internally works</span>
+<span class="sd">    with log(p) (= xk[0]) and log(r) (= xk[1]), we need to exp() them before</span>
+<span class="sd">    printing.</span>
+
+<span class="sd">    We also do that in HyperOpt if logscale=True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">##ic(np.exp(xk))</span>
+
+
+<span class="k">def</span> <span class="nf">gp_optimizer</span><span class="p">(</span><span class="n">obj_func</span><span class="p">,</span> <span class="n">initial_theta</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Custom optimizer for GaussianProcessRegressor using</span>
+<span class="sd">    differential_evolution.</span>
+
+<span class="sd">    Ignore initial_theta since we need only bounds for differential_evolution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Avoid pickle error when using multiprocessing in</span>
+    <span class="c1"># differential_evolution(..., workers=-1). We&#39;d use</span>
+    <span class="c1"># https://github.com/uqfoundation/multiprocess instead of the stdlib&#39;s</span>
+    <span class="c1"># multiprocessing to work around that but sadly differential_evolution()</span>
+    <span class="c1"># uses the latter internally, so we&#39;re stuck with that.</span>
+    <span class="k">global</span> <span class="n">_gp_obj_func_wrapper</span>
+
+    <span class="k">def</span> <span class="nf">_gp_obj_func_wrapper</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+        <span class="c1">##print(f&quot;{obj_func(initial_theta)=}&quot;)</span>
+        <span class="c1"># obj_func(theta, eval_gradient=True) hard-coded in</span>
+        <span class="c1"># GaussianProcessRegressor, so it always returns the function value and</span>
+        <span class="c1"># grad. However, we only need the function&#39;s value in</span>
+        <span class="c1"># differential_evolution() below. obj_func = -log_marginal_likelihood.</span>
+        <span class="c1">##val, grad = obj_func(params)</span>
+        <span class="k">return</span> <span class="n">obj_func</span><span class="p">(</span><span class="n">params</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">opt_result</span> <span class="o">=</span> <span class="n">differential_evolution</span><span class="p">(</span>
+        <span class="c1">##lambda params: obj_func(params)[0],  # nope, no pickle for you</span>
+        <span class="n">_gp_obj_func_wrapper</span><span class="p">,</span>
+        <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+        <span class="n">callback</span><span class="o">=</span><span class="n">de_callback_logscale</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">de_kwds_common</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">opt_result</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">opt_result</span><span class="o">.</span><span class="n">fun</span>
+
+
+<span class="c1">##from sklearn.model_selection import cross_val_score</span>
+<span class="k">def</span> <span class="nf">simple_cv</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Same as</span>
+
+<span class="sd">        -cross_val_score(model, X, y, cv=cv, scoring=&quot;neg_mean_squared_error&quot;)</span>
+
+<span class="sd">    but much faster because we bypass the rich API of</span>
+<span class="sd">    cross_val_score and can thus skip many many checks.</span>
+
+<span class="sd">    Note that the double negative in -cross_val_score() and &quot;neg_&quot; is needed</span>
+<span class="sd">    b/c of the sklearn API:</span>
+
+<span class="sd">    &quot;All scorer objects follow the convention that higher return values are</span>
+<span class="sd">    better than lower return values. Thus metrics which measure the distance</span>
+<span class="sd">    between the model and the data, like metrics.mean_squared_error, are</span>
+<span class="sd">    available as neg_mean_squared_error which return the negated value of the</span>
+<span class="sd">    metric.&quot;</span>
+
+<span class="sd">    See https://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">errs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">cv</span><span class="o">.</span><span class="n">get_n_splits</span><span class="p">(</span><span class="n">X</span><span class="p">),),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">tup</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cv</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">X</span><span class="p">)):</span>
+        <span class="n">idxs_train</span><span class="p">,</span> <span class="n">idxs_test</span> <span class="o">=</span> <span class="n">tup</span>
+        <span class="n">fm</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">idxs_train</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="n">y</span><span class="p">[</span><span class="n">idxs_train</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">idxs_test</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">-</span> <span class="n">y</span><span class="p">[</span><span class="n">idxs_test</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+        <span class="c1"># MSE</span>
+        <span class="n">errs</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">errs</span>
+    <span class="c1">##return -cross_val_score(model, X, y, cv=cv, scoring=&quot;neg_mean_squared_error&quot;)</span>
+
+
+<span class="k">class</span> <span class="nc">HyperOpt</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Optimize hyper params of a sklearn model using</span>
+<span class="sd">    differential_evolution.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_model</span> <span class="o">=</span> <span class="n">get_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logscale</span> <span class="o">=</span> <span class="n">logscale</span>
+
+    <span class="k">def</span> <span class="nf">obj_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">return_params</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">_ho_obj_func_wrapper</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">logscale</span><span class="p">:</span>
+            <span class="n">bounds_transform</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">params_transform</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">callback</span> <span class="o">=</span> <span class="n">de_callback_logscale</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">bounds_transform</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+            <span class="n">params_transform</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span>
+            <span class="n">callback</span> <span class="o">=</span> <span class="n">de_callback</span>
+
+        <span class="k">def</span> <span class="nf">_ho_obj_func_wrapper</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">obj_func</span><span class="p">(</span><span class="n">params_transform</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="n">opt_result</span> <span class="o">=</span> <span class="n">differential_evolution</span><span class="p">(</span>
+            <span class="n">_ho_obj_func_wrapper</span><span class="p">,</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="n">bounds_transform</span><span class="p">(</span><span class="n">bounds</span><span class="p">),</span>
+            <span class="n">callback</span><span class="o">=</span><span class="n">callback</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">de_kwds_common</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="n">params_transform</span><span class="p">(</span><span class="n">opt_result</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">return_params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span><span class="p">,</span> <span class="n">params</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span>
+
+
+<span class="k">class</span> <span class="nc">HyperOptKRR</span><span class="p">(</span><span class="n">HyperOpt</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+
+    <span class="k">def</span> <span class="nf">obj_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="n">cv</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">simple_cv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">HyperOptGP</span><span class="p">(</span><span class="n">HyperOpt</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">obj_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">get_model</span><span class="p">(</span><span class="n">params</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">log_marginal_likelihood</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="data">
+<h2>Data<a class="headerlink" href="#data" title="Permalink to this headline">#</a></h2>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">seed</span> <span class="o">=</span> <span class="mi">123</span>
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+<span class="c1"># Equidistant x points: constant y_std (from GP) in-distribution</span>
+<span class="c1">##x = np.linspace(0, 30, 60)</span>
+<span class="c1">#</span>
+<span class="c1"># Random x points for varying y_std. Also create a gap in the middle to</span>
+<span class="c1"># show high y_std.</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span>
+<span class="n">xspan</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">xspan</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.3</span> <span class="o">*</span> <span class="n">xspan</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">gt_func</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="n">gaussian_noise</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.075</span><span class="p">)</span>
+<span class="n">yi_gt</span> <span class="o">=</span> <span class="n">gt_func</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span>
+
+<span class="c1"># Data scaling.</span>
+<span class="n">in_scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">out_scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">transform_1d</span><span class="p">(</span><span class="n">in_scaler</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+<span class="n">xi</span> <span class="o">=</span> <span class="n">transform_1d</span><span class="p">(</span><span class="n">in_scaler</span><span class="p">,</span> <span class="n">xi</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">transform_1d</span><span class="p">(</span><span class="n">out_scaler</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">yi_gt</span> <span class="o">=</span> <span class="n">transform_1d</span><span class="p">(</span><span class="n">out_scaler</span><span class="p">,</span> <span class="n">yi_gt</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+<span class="n">XI</span> <span class="o">=</span> <span class="n">xi</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="correctness-checks-and-examples-on-how-to-play-with-optimizers">
+<h2>Correctness checks and examples on how to play with optimizers<a class="headerlink" href="#correctness-checks-and-examples-on-how-to-play-with-optimizers" title="Permalink to this headline">#</a></h2>
+<p>This is actually the interesting part. Please inspect the code.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># -------------------------------------------------------------------------</span>
+<span class="c1"># Sanity check KernelRidge API: alpha added to diag of kernel matrix.</span>
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="n">length_scale</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">noise_level</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">kp</span> <span class="o">=</span> <span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">)</span>
+<span class="n">f_krr_1</span> <span class="o">=</span> <span class="n">KernelRidge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">kp</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">f_krr_2</span> <span class="o">=</span> <span class="n">KernelRidge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;precomputed&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">kp</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">noise_level</span><span class="p">,</span> <span class="n">y</span>
+<span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_krr_1</span><span class="o">.</span><span class="n">dual_coef_</span><span class="p">,</span> <span class="n">f_krr_2</span><span class="o">.</span><span class="n">dual_coef_</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_krr_1</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">),</span> <span class="n">f_krr_2</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">kp</span><span class="p">(</span><span class="n">XI</span><span class="p">,</span> <span class="n">X</span><span class="p">)))</span>
+
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="c1"># Show that WhiteKernel(noise_level=) is equal to regularization param</span>
+<span class="c1"># alpha=noise_level in both sklearn models. No hyperopt just yet</span>
+<span class="c1"># (GaussianProcessRegressor(optimizer=None)). Use fixed hyper</span>
+<span class="c1"># params=[length_scale,noise_level].</span>
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="n">f_gp_kp</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">kp</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">f_gp_kpr</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">),</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_gp_kp</span><span class="o">.</span><span class="n">alpha_</span><span class="p">,</span> <span class="n">f_gp_kpr</span><span class="o">.</span><span class="n">alpha_</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_gp_kp</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">),</span> <span class="n">f_gp_kpr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">))</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_gp_kp</span><span class="o">.</span><span class="n">alpha_</span><span class="p">,</span> <span class="n">f_krr_1</span><span class="o">.</span><span class="n">dual_coef_</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_gp_kp</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">),</span> <span class="n">f_krr_1</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">))</span>
+
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="c1"># Non-zero mean for fixed length_scale and noise_level.</span>
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="n">f_krr_nzm</span> <span class="o">=</span> <span class="n">KernelRidge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">kp</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">f_gp_nzm</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">),</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1000</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_gp_nzm</span><span class="o">.</span><span class="n">alpha_</span><span class="p">,</span> <span class="n">f_krr_nzm</span><span class="o">.</span><span class="n">dual_coef_</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_gp_nzm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">),</span> <span class="n">f_krr_nzm</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">))</span>
+
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="c1"># hyperopt gp</span>
+<span class="c1">#</span>
+<span class="c1"># Show 4 ways to opt [length_scale, noise_level]. One using the default</span>
+<span class="c1"># optimizer for reference. Then 3 ways to use the custom differential</span>
+<span class="c1"># evolution (DE) based one using the HyperOpt helper class.</span>
+<span class="c1">#</span>
+<span class="c1"># DE results must be exactly equal if we use logscale=True, i.e. what</span>
+<span class="c1"># GaussianProcessRegressor does internally, so these tests only check</span>
+<span class="c1"># different code paths doing the same operations (of course also we fix all</span>
+<span class="c1"># RNG seeds, so DE is reproducible).</span>
+<span class="c1">#</span>
+<span class="c1"># With logscale=False params are not equal but very close, also because we</span>
+<span class="c1"># use polish=True which adds a final local optimizer run starting from the</span>
+<span class="c1"># best DE result where we assume that we&#39;re close to the global opt and</span>
+<span class="c1"># things are convex-ish.</span>
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="n">length_scale_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1e-5</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">noise_level_bounds</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1e-10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">bounds</span> <span class="o">=</span> <span class="p">[</span><span class="n">length_scale_bounds</span><span class="p">,</span> <span class="n">noise_level_bounds</span><span class="p">]</span>
+
+<span class="n">de_kwds_common</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">polish</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">disp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">atol</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">tol</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+    <span class="n">popsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">maxiter</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+    <span class="n">workers</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">updating</span><span class="o">=</span><span class="s2">&quot;deferred&quot;</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># Internal optimizer API. Use default local optimizer (BFGS).</span>
+<span class="c1">#</span>
+<span class="c1"># For the wider bounds above the -LML shows big flat plateaus and so the</span>
+<span class="c1"># local optimizer always goes off into the wild blue yonder with</span>
+<span class="c1"># n_restarts_optimizer=0 (the default).</span>
+<span class="c1">#</span>
+<span class="c1">##ic(&quot;opt gp internal default RBF + WhiteKernel ...&quot;)</span>
+<span class="n">f_gp_0</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale_bounds</span><span class="o">=</span><span class="n">length_scale_bounds</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">(</span>
+        <span class="n">noise_level_bounds</span><span class="o">=</span><span class="n">noise_level_bounds</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">n_restarts_optimizer</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">normalize_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">params_gp_0</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">f_gp_0</span><span class="o">.</span><span class="n">kernel_</span><span class="o">.</span><span class="n">k1</span><span class="o">.</span><span class="n">length_scale</span><span class="p">,</span>
+        <span class="n">f_gp_0</span><span class="o">.</span><span class="n">kernel_</span><span class="o">.</span><span class="n">k2</span><span class="o">.</span><span class="n">noise_level</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="n">ic</span><span class="p">(</span><span class="n">params_gp_0</span><span class="p">)</span>
+
+<span class="c1"># Internal optimizer API. Use differential_evolution.</span>
+<span class="c1">#</span>
+<span class="c1">##ic(&quot;opt gp internal RBF + WhiteKernel ...&quot;)</span>
+<span class="n">f_gp_1</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale_bounds</span><span class="o">=</span><span class="n">length_scale_bounds</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">(</span>
+        <span class="n">noise_level_bounds</span><span class="o">=</span><span class="n">noise_level_bounds</span><span class="p">,</span>
+    <span class="p">),</span>
+    <span class="n">n_restarts_optimizer</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="n">gp_optimizer</span><span class="p">,</span>
+    <span class="n">normalize_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">params_gp_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="n">f_gp_1</span><span class="o">.</span><span class="n">kernel_</span><span class="o">.</span><span class="n">k1</span><span class="o">.</span><span class="n">length_scale</span><span class="p">,</span>
+        <span class="n">f_gp_1</span><span class="o">.</span><span class="n">kernel_</span><span class="o">.</span><span class="n">k2</span><span class="o">.</span><span class="n">noise_level</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="n">ic</span><span class="p">(</span><span class="n">params_gp_1</span><span class="p">)</span>
+
+<span class="c1"># External optimizer using HyperOpt helper class.</span>
+<span class="c1">#</span>
+<span class="c1"># RBF + WhiteKernel</span>
+<span class="c1">#</span>
+<span class="c1">##ic(&quot;opt gp external RBF + WhiteKernel ...&quot;)</span>
+<span class="n">get_model_gp_2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">params</span><span class="p">:</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">f_gp_2</span><span class="p">,</span> <span class="n">params_gp_2</span> <span class="o">=</span> <span class="n">HyperOptGP</span><span class="p">(</span>
+    <span class="n">get_model</span><span class="o">=</span><span class="n">get_model_gp_2</span><span class="p">,</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">logscale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">return_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ic</span><span class="p">(</span><span class="n">params_gp_2</span><span class="p">)</span>
+
+<span class="c1"># External optimizer using HyperOpt helper class.</span>
+<span class="c1">#</span>
+<span class="c1"># RBF, alpha</span>
+<span class="c1">#</span>
+<span class="c1">##ic(&quot;opt gp external RBF + alpha ...&quot;)</span>
+<span class="n">get_model_gp_3</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">params</span><span class="p">:</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">f_gp_3</span><span class="p">,</span> <span class="n">params_gp_3</span> <span class="o">=</span> <span class="n">HyperOptGP</span><span class="p">(</span>
+    <span class="n">get_model</span><span class="o">=</span><span class="n">get_model_gp_3</span><span class="p">,</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">logscale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">return_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ic</span><span class="p">(</span><span class="n">params_gp_3</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">params_gp_1</span><span class="p">,</span> <span class="n">params_gp_2</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">params_gp_1</span><span class="p">,</span> <span class="n">params_gp_3</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_gp_1</span><span class="o">.</span><span class="n">alpha_</span><span class="p">,</span> <span class="n">f_gp_2</span><span class="o">.</span><span class="n">alpha_</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_gp_1</span><span class="o">.</span><span class="n">alpha_</span><span class="p">,</span> <span class="n">f_gp_3</span><span class="o">.</span><span class="n">alpha_</span><span class="p">)</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_gp_1</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">),</span> <span class="n">f_gp_2</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">))</span>
+<span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">f_gp_1</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">),</span> <span class="n">f_gp_3</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">))</span>
+
+<span class="c1"># External optimizer using HyperOpt helper class.</span>
+<span class="c1">#</span>
+<span class="c1"># RBF, alpha</span>
+<span class="c1"># logscale=False</span>
+<span class="c1">#</span>
+<span class="c1">##ic(&quot;opt gp external RBF + alpha nolog ...&quot;)</span>
+<span class="n">get_model_gp_3_nolog</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">params</span><span class="p">:</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">f_gp_3_nolog</span><span class="p">,</span> <span class="n">params_gp_3_nolog</span> <span class="o">=</span> <span class="n">HyperOptGP</span><span class="p">(</span>
+    <span class="n">get_model</span><span class="o">=</span><span class="n">get_model_gp_3_nolog</span><span class="p">,</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">return_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ic</span><span class="p">(</span><span class="n">params_gp_3_nolog</span><span class="p">)</span>
+
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="c1"># hyperopt krr</span>
+<span class="c1">#</span>
+<span class="c1"># KRR params will be different b/c CV != log_marginal_likelihood</span>
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="n">get_model_krr</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">params</span><span class="p">:</span> <span class="n">KernelRidge</span><span class="p">(</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="p">)</span>
+
+<span class="c1">##ic(&quot;opt krr RBF + alpha ...&quot;)</span>
+<span class="n">f_krr</span><span class="p">,</span> <span class="n">params_krr</span> <span class="o">=</span> <span class="n">HyperOptKRR</span><span class="p">(</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">get_model</span><span class="o">=</span><span class="n">get_model_krr</span><span class="p">,</span>
+    <span class="n">logscale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">return_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ic</span><span class="p">(</span><span class="n">params_krr</span><span class="p">)</span>
+
+<span class="c1">##ic(&quot;opt krr RBF + alpha nolog ...&quot;)</span>
+<span class="n">f_krr_nolog</span><span class="p">,</span> <span class="n">params_krr_nolog</span> <span class="o">=</span> <span class="n">HyperOptKRR</span><span class="p">(</span>
+    <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+    <span class="n">get_model</span><span class="o">=</span><span class="n">get_model_krr</span><span class="p">,</span>
+    <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">return_params</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ic</span><span class="p">(</span><span class="n">params_krr_nolog</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ic| params_gp_0: array([0.11021766, 0.05521954])
+ic| params_gp_1: array([0.11021771, 0.05521953])
+ic| params_gp_2: array([0.11021771, 0.05521953])
+ic| params_gp_3: array([0.11021771, 0.05521953])
+ic| params_gp_3_nolog: array([0.11021768, 0.05521953])
+ic| params_krr: array([0.15470176, 0.01443063])
+ic| params_krr_nolog: array([0.15470279, 0.01442918])
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([0.15470279, 0.01442918])
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="plot-gp-and-krr-predictions-after-hyperopt">
+<h2>Plot GP and KRR predictions after hyperopt<a class="headerlink" href="#plot-gp-and-krr-predictions-after-hyperopt" title="Permalink to this headline">#</a></h2>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># -------------------------------------------------------------------------</span>
+<span class="c1"># Plot functions, data and GP&#39;s std</span>
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.autolayout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;font.size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">18</span>
+<span class="n">savefig</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="n">yi_krr</span> <span class="o">=</span> <span class="n">f_krr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">)</span>
+<span class="n">yi_gp</span><span class="p">,</span> <span class="n">yi_gp_std</span> <span class="o">=</span> <span class="n">f_gp_1</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">XI</span><span class="p">,</span> <span class="n">return_std</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="c1">##yi_gp, yi_gp_std = f_gp_3_nolog.predict(XI, return_std=True)</span>
+
+<span class="n">fig1</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span>
+    <span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">gridspec_kw</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">height_ratios</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]),</span>
+    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:gray&quot;</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi_krr</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;KRR&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:red&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi_gp</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;GP&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:green&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fill_between</span><span class="p">(</span>
+    <span class="n">xi</span><span class="p">,</span>
+    <span class="n">yi_gp</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">yi_gp_std</span><span class="p">,</span>
+    <span class="n">yi_gp</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">yi_gp_std</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:green&quot;</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;GP $\pm 2\,\sigma$&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">yspan</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi_gt</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Ground truth g(x)&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tab:gray&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">yspan</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">yspan</span><span class="p">)</span>
+
+<span class="n">axs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">xi</span><span class="p">,</span> <span class="n">yi_gp_std</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;GP $\sigma$&quot;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axs</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/notebook_comp_plot_9_0.png" src="../../_images/notebook_comp_plot_9_0.png" />
+</div>
+</div>
+</section>
+<section id="plot-gp-and-krr-hyperparameter-objective-functions">
+<h2>Plot GP and KRR hyperparameter objective functions<a class="headerlink" href="#plot-gp-and-krr-hyperparameter-objective-functions" title="Permalink to this headline">#</a></h2>
+<p>So here we have it. -LML <span class="math notranslate nohighlight">\(\neq\)</span> CV, and therefore the optimal hyperparameters
+<span class="math notranslate nohighlight">\((\ell,\eta)\)</span> are different.</p>
+<div class="cell tag_hide-input docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Could re-use HyperOpt instances from above, but re-create here for</span>
+<span class="c1"># clarity.</span>
+<span class="c1">##ic(&quot;Plot hyperopt objective functions&quot;)</span>
+<span class="n">nsample</span> <span class="o">=</span> <span class="mi">35</span>
+<span class="n">nlevels</span> <span class="o">=</span> <span class="mi">35</span>
+<span class="n">z_log</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">length_scale</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">length_scale_bounds</span><span class="p">),</span> <span class="n">nsample</span><span class="p">)</span>
+<span class="n">noise_level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">noise_level_bounds</span><span class="p">),</span> <span class="n">nsample</span><span class="p">)</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">length_scale</span><span class="p">,</span> <span class="n">noise_level</span><span class="p">)))</span>
+<span class="n">fig2</span><span class="p">,</span> <span class="n">axs2d</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">fig3</span><span class="p">,</span> <span class="n">axs3d</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span>
+    <span class="n">nrows</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">18</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">subplot_kw</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;projection&quot;</span><span class="p">:</span> <span class="s2">&quot;3d&quot;</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="c1"># zmax for linear z scale (see below)</span>
+<span class="n">cases</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">gp</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">zmax</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">),</span> <span class="n">krr</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">zmax</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">icol</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cases</span><span class="p">):</span>
+    <span class="n">ax2d</span> <span class="o">=</span> <span class="n">axs2d</span><span class="p">[</span><span class="n">icol</span><span class="p">]</span>
+    <span class="n">ax3d</span> <span class="o">=</span> <span class="n">axs3d</span><span class="p">[</span><span class="n">icol</span><span class="p">]</span>
+    <span class="n">ax2d</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+    <span class="n">ax3d</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;krr&quot;</span><span class="p">:</span>
+        <span class="n">ho</span> <span class="o">=</span> <span class="n">HyperOptKRR</span><span class="p">(</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
+            <span class="n">get_model</span><span class="o">=</span><span class="n">get_model_krr</span><span class="p">,</span>
+            <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">ho</span><span class="o">.</span><span class="n">obj_func</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+        <span class="n">params_opt</span> <span class="o">=</span> <span class="n">params_krr</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;gp&quot;</span><span class="p">:</span>
+
+        <span class="c1"># Use a fitted GP object from above that has RBF+WhiteKernel such</span>
+        <span class="c1"># that we can call log_marginal_likelihood() with a length 2 param</span>
+        <span class="c1"># array.</span>
+        <span class="c1">#</span>
+        <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+            <span class="k">return</span> <span class="o">-</span><span class="n">f_gp_1</span><span class="o">.</span><span class="n">log_marginal_likelihood</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">params</span><span class="p">))</span>
+
+        <span class="c1"># Use HyperOpt API defined above.</span>
+        <span class="c1">#</span>
+        <span class="c1">##ho = HyperOptGP(</span>
+        <span class="c1">##    get_model=get_model_gp_2,</span>
+        <span class="c1">##    bounds=bounds,</span>
+        <span class="c1">##)</span>
+
+        <span class="c1">##def func(params):</span>
+        <span class="c1">##    return ho.obj_func(params, X, y)</span>
+
+        <span class="n">params_opt</span> <span class="o">=</span> <span class="n">params_gp_1</span>
+
+    <span class="k">with</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">())</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+        <span class="n">zz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">grid</span><span class="p">))</span>
+
+    <span class="c1"># z log scale looks nice but is hard to interpret, also it heavily</span>
+    <span class="c1"># depends on eps of course. When not using a z log scale we need to cut</span>
+    <span class="c1"># off at z &gt;= zmax to visualize low z value regions where the global</span>
+    <span class="c1"># mins live. Note that zmax depends on bounds and thus on the range of</span>
+    <span class="c1"># z values. Compared to krr, the GP&#39;s LML is essentially flat around</span>
+    <span class="c1"># the min. Still DE and the local optimizer find the same min.</span>
+    <span class="k">if</span> <span class="n">z_log</span><span class="p">:</span>
+        <span class="n">eps</span> <span class="o">=</span> <span class="mf">0.01</span>
+        <span class="n">zz</span> <span class="o">-=</span> <span class="n">zz</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="n">eps</span>
+        <span class="n">zz</span> <span class="o">/=</span> <span class="n">zz</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">zmax</span> <span class="o">=</span> <span class="n">cases</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;zmax&quot;</span><span class="p">]</span>
+        <span class="n">zz</span> <span class="o">-=</span> <span class="n">zz</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">zz</span> <span class="o">/=</span> <span class="n">zz</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="c1">##zz = np.ma.masked_where(zz &gt; zmax, zz)</span>
+        <span class="n">zz</span><span class="p">[</span><span class="n">zz</span> <span class="o">&gt;=</span> <span class="n">zmax</span><span class="p">]</span> <span class="o">=</span> <span class="n">zmax</span>
+
+    <span class="n">_X</span><span class="p">,</span> <span class="n">_Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">length_scale</span><span class="p">,</span> <span class="n">noise_level</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s2">&quot;ij&quot;</span><span class="p">)</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">zz</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">_X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">_X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="k">if</span> <span class="n">z_log</span><span class="p">:</span>
+        <span class="n">levels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">zz</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">zz</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span> <span class="n">nlevels</span><span class="p">)</span>
+        <span class="n">pl2d</span> <span class="o">=</span> <span class="n">ax2d</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">_X</span><span class="p">,</span> <span class="n">_Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">levels</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">LogNorm</span><span class="p">())</span>
+        <span class="n">pl3d</span> <span class="o">=</span> <span class="n">ax3d</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">_X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">_Y</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">Z</span><span class="p">),</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">pl2d</span> <span class="o">=</span> <span class="n">ax2d</span><span class="o">.</span><span class="n">contourf</span><span class="p">(</span><span class="n">_X</span><span class="p">,</span> <span class="n">_Y</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">levels</span><span class="o">=</span><span class="n">nlevels</span><span class="p">)</span>
+        <span class="n">pl3d</span> <span class="o">=</span> <span class="n">ax3d</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">_X</span><span class="p">),</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">_Y</span><span class="p">),</span>
+            <span class="n">Z</span><span class="p">,</span>
+            <span class="n">cmap</span><span class="o">=</span><span class="n">cm</span><span class="o">.</span><span class="n">viridis</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">ax3d</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="n">elev</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">azim</span><span class="o">=-</span><span class="mi">140</span><span class="p">,</span> <span class="n">roll</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">fig2</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">pl2d</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax2d</span><span class="p">)</span>
+    <span class="n">fig3</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">pl3d</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax3d</span><span class="p">)</span>
+    <span class="n">ax2d</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">params_opt</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;gp&quot;</span><span class="p">:</span>
+        <span class="n">ax2d</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="n">params_gp_0</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">)</span>
+    <span class="n">ax2d</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\ell$&quot;</span><span class="p">)</span>
+    <span class="n">ax2d</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\sigma_n^2$&quot;</span><span class="p">)</span>
+    <span class="n">ax3d</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\log_</span><span class="si">{10}</span><span class="s2">(\ell)$&quot;</span><span class="p">)</span>
+    <span class="n">ax3d</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;$\log_</span><span class="si">{10}</span><span class="s2">(\sigma_n^2)$&quot;</span><span class="p">)</span>
+    <span class="n">ax2d</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+    <span class="n">ax2d</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">savefig</span><span class="p">:</span>
+    <span class="n">fig1</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;gp_krr_pred.pdf&quot;</span><span class="p">)</span>
+    <span class="n">fig2</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;gp_krr_hyperopt_objective.pdf&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../../_images/notebook_comp_plot_11_0.png" src="../../_images/notebook_comp_plot_11_0.png" />
+<img alt="../../_images/notebook_comp_plot_11_1.png" src="../../_images/notebook_comp_plot_11_1.png" />
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./content/gp_krr_hyperopt"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="intro.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Compare GPs and kernel ridge regression (KRR)</p>
+        </div>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Steve Schmerler<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

@@ -1,0 +1,723 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Compare GPs and kernel ridge regression (KRR) &#8212; gp_playground</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"tex": {"macros": {"ve": ["\\boldsymbol{\\mathit{#1}}", 1], "ma": ["\\mathbf{#1}", 1], "inv": ["{#1}^{-1}", 1], "trans": ["{#1}^{\\top}", 1], "cov": ["\\mathrm{cov}"]}}, "options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Explore GPs and KRR with code" href="notebook_comp_plot.html" />
+    <link rel="prev" title="Prior and (noisy) posterior predictions" href="../gp_pred_comp/notebook_plot.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../../index.html">
+      
+      
+      
+      <h1 class="site-logo" id="site-title">gp_playground</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../../root.html">
+                    <no title>
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../gp_pred_comp/intro.html">
+   The role of noise in GPs
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../gp_pred_comp/notebook_common.html">
+     Reference implementation of RW06 equations
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../gp_pred_comp/notebook_comp.html">
+     Comparison of GP libraries
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../gp_pred_comp/notebook_plot.html">
+     Prior and (noisy) posterior predictions
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active has-children">
+  <a class="current reference internal" href="#">
+   Compare GPs and kernel ridge regression (KRR)
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/>
+  <label for="toctree-checkbox-2">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="notebook_comp_plot.html">
+     Explore GPs and KRR with code
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+<a href="https://github.com/elcorto/gp_playground"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="bottom"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../../_sources/content/gp_krr_hyperopt/intro.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#kernel-covariance-function">
+   Kernel / covariance function
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#kernelridge">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     KernelRidge
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gaussianprocessregressor">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     GaussianProcessRegressor
+    </span>
+   </code>
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#differences-to-krr">
+     Differences to KRR
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#noise-in-whitekernel">
+       Noise in
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         WhiteKernel
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#hyperopt-objective-function">
+       Hyperopt objective function
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#gp-optimizer">
+     GP optimizer
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-results-of-optimized-models">
+     Example results of optimized models
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#why-the-gp-and-krr-hyperparameters-are-different-after-optimization">
+   Why the GP and KRR hyperparameters are different after optimization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#data-scaling">
+   Data scaling
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Compare GPs and kernel ridge regression (KRR)</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#kernel-covariance-function">
+   Kernel / covariance function
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#kernelridge">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     KernelRidge
+    </span>
+   </code>
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#gaussianprocessregressor">
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     GaussianProcessRegressor
+    </span>
+   </code>
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#differences-to-krr">
+     Differences to KRR
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#noise-in-whitekernel">
+       Noise in
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         WhiteKernel
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#hyperopt-objective-function">
+       Hyperopt objective function
+      </a>
+     </li>
+    </ul>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#gp-optimizer">
+     GP optimizer
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#example-results-of-optimized-models">
+     Example results of optimized models
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#why-the-gp-and-krr-hyperparameters-are-different-after-optimization">
+   Why the GP and KRR hyperparameters are different after optimization
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#data-scaling">
+   Data scaling
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="compare-gps-and-kernel-ridge-regression-krr">
+<h1>Compare GPs and kernel ridge regression (KRR)<a class="headerlink" href="#compare-gps-and-kernel-ridge-regression-krr" title="Permalink to this headline">#</a></h1>
+<p>Show that GPs and KRR are the same w.r.t. weights and predictions. They only
+differ in the way hyperparameter optimization is done.</p>
+<p>In order to underline the latter, we perform a hyperopt for a sklearn KRR and
+GP model using the same external optimizer which is not present in sklearn. We
+use <code class="docutils literal notranslate"><span class="pre">scipy.optimizer.differential_evolution</span></code> as an example of a global
+optimization method.</p>
+<section id="kernel-covariance-function">
+<h2>Kernel / covariance function<a class="headerlink" href="#kernel-covariance-function" title="Permalink to this headline">#</a></h2>
+<p>We use the radial basis function (RBF) kernel function <span class="math notranslate nohighlight">\(\kappa(\cdot,\cdot)\)</span>,
+also called squared-exponential kernel. The kernel matrix
+is</p>
+<div class="math notranslate nohighlight">
+\[K_{ij} = \kappa(\ve x_i, \ve x_j)\]</div>
+<p>Note that there are many other RBFs but <code class="docutils literal notranslate"><span class="pre">sklearn</span></code> only implements that one.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.gaussian_process.kernels</span> <span class="kn">import</span> <span class="n">RBF</span>
+<span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=...</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="kernelridge">
+<h2><code class="docutils literal notranslate"><span class="pre">KernelRidge</span></code><a class="headerlink" href="#kernelridge" title="Permalink to this headline">#</a></h2>
+<p>We solve</p>
+<div class="math notranslate nohighlight" id="equation-e-krr-solve">
+<span class="eqno">(1)<a class="headerlink" href="#equation-e-krr-solve" title="Permalink to this equation">#</a></span>\[    (\ma K + \eta\,\ma I)\,\ve\alpha = \ve y\]</div>
+<p>for the weights <span class="math notranslate nohighlight">\(\ve\alpha\)</span> (called <code class="docutils literal notranslate"><span class="pre">KernelRidge.alpha_</span></code> in <code class="docutils literal notranslate"><span class="pre">sklearn</span></code>).</p>
+<p>We specify <span class="math notranslate nohighlight">\(\eta\)</span> as <code class="docutils literal notranslate"><span class="pre">alpha</span></code></p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">KernelRidge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Calling</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">KernelRidge</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>solves <a class="reference internal" href="#equation-e-krr-solve">(1)</a> once.</p>
+</section>
+<section id="gaussianprocessregressor">
+<h2><code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code><a class="headerlink" href="#gaussianprocessregressor" title="Permalink to this headline">#</a></h2>
+<p>In addition to <code class="docutils literal notranslate"><span class="pre">RBF</span></code>, we can use a <code class="docutils literal notranslate"><span class="pre">WhiteKernel</span></code> “to learn global noise”, so
+the kernel we use is a combination of two kernels which are responsible for
+modeling different aspects of the data (i.e. “kernel engineering”). The
+resulting kernel matrix is the same as the above, where</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.gaussian_process.kernels</span> <span class="kn">import</span> <span class="n">RBF</span><span class="p">,</span> <span class="n">WhiteKernel</span>
+<span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">)</span> <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>results in</p>
+<div class="math notranslate nohighlight">
+\[    \ma K + \eta\,\ma I\]</div>
+<p>and we solve <a class="reference internal" href="#equation-e-krr-solve">(1)</a> for <span class="math notranslate nohighlight">\(\ve\alpha\)</span>, also called <code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor.alpha_</span></code>.</p>
+<section id="differences-to-krr">
+<h3>Differences to KRR<a class="headerlink" href="#differences-to-krr" title="Permalink to this headline">#</a></h3>
+<section id="noise-in-whitekernel">
+<h4>Noise in <code class="docutils literal notranslate"><span class="pre">WhiteKernel</span></code><a class="headerlink" href="#noise-in-whitekernel" title="Permalink to this headline">#</a></h4>
+<p>In contrast to <code class="docutils literal notranslate"><span class="pre">KernelRidge</span></code>, calling</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">GaussianProcessRegressor</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>does not solve for the weights once, but by default
+(<code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor(optimizer=...)</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>) uses a local
+optimizer to optimize all kernel hyperparameters, solving <a class="reference internal" href="#equation-e-krr-solve">(1)</a> in
+each step.</p>
+<p>One can also specify <span class="math notranslate nohighlight">\(\eta\)</span> as regularization parameter as in <code class="docutils literal notranslate"><span class="pre">KernelRidge</span></code></p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">GaussianProcessRegressor</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">noise_level</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(in fact the default is not zero but 1e-10), which has the exact same effect
+<em>when solving for the weights</em>. But when calling
+<code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor.predict()</span></code>, the noise value will not be present. For
+more details, see <a class="reference internal" href="../gp_pred_comp/intro.html#s-pred-noise"><span class="std std-ref">this section</span></a>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code> optimizer cannot optimize <span class="math notranslate nohighlight">\(\eta\)</span> when
+given as regularization parameter, since it only optimizes kernel
+hyperparameters, which is why we have to sneak it in via
+<code class="docutils literal notranslate"><span class="pre">WhiteKernel(noise_level=)</span></code> where we interpret it as noise, while setting the
+regularization parameter <code class="docutils literal notranslate"><span class="pre">alpha=0</span></code>. This is a technicality and might be a bit
+confusing since from a textbook point of view, <span class="math notranslate nohighlight">\(\eta\)</span> is not a parameter
+of any kernel.</p>
+</section>
+<section id="hyperopt-objective-function">
+<h4>Hyperopt objective function<a class="headerlink" href="#hyperopt-objective-function" title="Permalink to this headline">#</a></h4>
+<p>The difference to KRR is that the GP implementation optimizes the kernel’s
+params, here <span class="math notranslate nohighlight">\(\ell\)</span> and <span class="math notranslate nohighlight">\(\eta\)</span> treated as kernel param, by maximization
+of the log marginal likelihood (LML) while KRR needs to use cross validation.
+Also we get <code class="docutils literal notranslate"><span class="pre">y_std</span></code> or <code class="docutils literal notranslate"><span class="pre">y_cov</span></code> if we want, so of course the GP is in general
+the preferred solution. Additionally, the GP can use the LML’s gradient to do
+local optimization, which can be fast if the LML evaluation is fast and it can
+be the global min if the LML surface is convex, at least the neighborhood of a
+good start guess.</p>
+</section>
+</section>
+<section id="gp-optimizer">
+<h3>GP optimizer<a class="headerlink" href="#gp-optimizer" title="Permalink to this headline">#</a></h3>
+<p>In addition to using <code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code>’s internal optimizer code path,
+either by using the default <code class="docutils literal notranslate"><span class="pre">l_bfgs_b</span></code> local optimizer or by setting a custom one
+using <code class="docutils literal notranslate"><span class="pre">optimizer=my_optimizer</span></code>, we show how to optimize the GP’s
+hyperparameters in the same way as any other model by setting
+<code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor(optimizer=None)</span></code> in combination with an external
+optimizer. With that, we can use either
+<code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor(alpha=noise_level)</span></code>, i.e. treat it as
+<code class="docutils literal notranslate"><span class="pre">KernelRidge(alpha=noise_level)</span></code>, or
+<code class="docutils literal notranslate"><span class="pre">WhiteKernel(noise_level=noise_level)</span></code> and get the exact same results.</p>
+<p>We define a custom GP optimizer using <code class="docutils literal notranslate"><span class="pre">scipy.optimize.differential_evolution</span></code>
+(i) to show how this can be done in general and (ii) because the default local
+optimizer (<code class="docutils literal notranslate"><span class="pre">l_bfgs_b</span></code>), also with <code class="docutils literal notranslate"><span class="pre">n_restarts_optimizer&gt;0</span></code> can get stuck in local
+optima or on flat plateaus sometimes. Sometimes because the start guess is
+randomly selected from bounds (the docs are bleak on how to fix the RNG for
+that, so we don’t).</p>
+</section>
+<section id="example-results-of-optimized-models">
+<h3>Example results of optimized models<a class="headerlink" href="#example-results-of-optimized-models" title="Permalink to this headline">#</a></h3>
+<p>GP, using the internal optimizer API and <code class="docutils literal notranslate"><span class="pre">RBF+WhiteKernel</span></code>:</p>
+<p><code class="docutils literal notranslate"><span class="pre">k1</span></code> is the Gaussian RBF kernel. <code class="docutils literal notranslate"><span class="pre">length_scale</span></code> is the optimized kernel width
+parameter. <code class="docutils literal notranslate"><span class="pre">k2</span></code> is the <code class="docutils literal notranslate"><span class="pre">WhiteKernel</span></code> with its optimized <code class="docutils literal notranslate"><span class="pre">noise_level</span></code> parameter.</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;k1&#39;</span><span class="p">:</span> <span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="mf">0.147</span><span class="p">),</span>
+ <span class="s1">&#39;k1__length_scale&#39;</span><span class="p">:</span> <span class="mf">0.14696558218508174</span><span class="p">,</span>
+ <span class="s1">&#39;k1__length_scale_bounds&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1e-05</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+ <span class="s1">&#39;k2&#39;</span><span class="p">:</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="mf">0.0882</span><span class="p">),</span>
+ <span class="s1">&#39;k2__noise_level&#39;</span><span class="p">:</span> <span class="mf">0.08820850820059796</span><span class="p">,</span>
+ <span class="s1">&#39;k2__noise_level_bounds&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
+</pre></div>
+</div>
+<p>Fitted GP weights can be accessed by</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">GaussianProcessRegressor</span><span class="o">.</span><span class="n">alpha_</span>
+</pre></div>
+</div>
+<p>and optimized kernel hyper params by</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">GaussianProcessRegressor</span><span class="o">.</span><span class="n">kernel_</span><span class="o">.</span><span class="n">k1</span><span class="o">.</span><span class="n">length_scale</span>
+<span class="n">GaussianProcessRegressor</span><span class="o">.</span><span class="n">kernel_</span><span class="o">.</span><span class="n">k2</span><span class="o">.</span><span class="n">noise_level</span>
+</pre></div>
+</div>
+<p>where trailing underscores denote values after calling <code class="docutils literal notranslate"><span class="pre">fit()</span></code>: weights
+<code class="docutils literal notranslate"><span class="pre">alpha_</span></code> and hyperopt <code class="docutils literal notranslate"><span class="pre">kernel_</span></code>.</p>
+</section>
+</section>
+<section id="why-the-gp-and-krr-hyperparameters-are-different-after-optimization">
+<h2>Why the GP and KRR hyperparameters are different after optimization<a class="headerlink" href="#why-the-gp-and-krr-hyperparameters-are-different-after-optimization" title="Permalink to this headline">#</a></h2>
+<p>We use both models to solve <a class="reference internal" href="#equation-e-krr-solve">(1)</a> and therefore the results of the
+hyperopt (<span class="math notranslate nohighlight">\(\ell\)</span> and <span class="math notranslate nohighlight">\(\eta\)</span>) should be the same … which
+they aren’t.</p>
+<p>The reason is, as mentioned above already, that KRR has to resort to something
+like cross validation (CV) to get a useful optimization objective, while GPs
+can use maximization of the LML (see also <a class="reference external" href="https://scikit-learn.org/stable/modules/gaussian_process.html#comparison-of-gpr-and-kernel-ridge-regression">this part of the <code class="docutils literal notranslate"><span class="pre">sklearn</span></code>
+docs</a>). They can be equivalent, given one performs a very
+particular and super costly variant of CV involving an “exhaustive leave-p-out
+cross-validation averaged over all values of p and all held-out test sets when
+using the log posterior predictive probability as the scoring rule”, see
+https://arxiv.org/abs/1905.08737 for details. This is nice but hard to do in
+practice. Instead, we use <code class="docutils literal notranslate"><span class="pre">KFold</span></code> (try to replace <code class="docutils literal notranslate"><span class="pre">KFold</span></code> by <code class="docutils literal notranslate"><span class="pre">LeavePOut</span></code> with
+<code class="docutils literal notranslate"><span class="pre">p&gt;1</span></code> and then wait …). This basically means that any form of practically
+usable CV is an approximation of the LML with varying quality.</p>
+<p>We plot the CV and -LML surface as function of <span class="math notranslate nohighlight">\(\ell\)</span> and <span class="math notranslate nohighlight">\(\eta\)</span> on a log scale
+to get a visual representation of the problem that we solve here. <code class="docutils literal notranslate"><span class="pre">sklearn</span></code>
+uses the log of <span class="math notranslate nohighlight">\(\ell\)</span> and <span class="math notranslate nohighlight">\(\eta\)</span> internally because (see
+<code class="docutils literal notranslate"><span class="pre">sklearn.gaussian_process.kernels.Kernel.theta</span></code>, where <code class="docutils literal notranslate"><span class="pre">theta=[length_scale,</span> <span class="pre">noise_level]</span></code> here):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Note that theta are typically the log-transformed values of the
+kernel&#39;s hyperparameters as this representation of the search space
+is more amenable for hyperparameter search, as hyperparameters like
+length-scales naturally live on a log-scale.
+</pre></div>
+</div>
+<p>We do the same if <code class="docutils literal notranslate"><span class="pre">HyperOpt(...,</span> <span class="pre">logscale=True)</span></code>.</p>
+</section>
+<section id="data-scaling">
+<h2>Data scaling<a class="headerlink" href="#data-scaling" title="Permalink to this headline">#</a></h2>
+<p>For both KRR and GP below, we work with the same scaled data (esp. zero mean).
+<code class="docutils literal notranslate"><span class="pre">KernelRidge</span></code> has no</p>
+<ul class="simple">
+<li><p>constant offset term to <code class="docutils literal notranslate"><span class="pre">fit()</span></code>, i.e. there is no <code class="docutils literal notranslate"><span class="pre">fit_intercept</span></code> as in <code class="docutils literal notranslate"><span class="pre">Ridge</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">normalize_y</span></code> as in <code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code>, which is why we use
+<code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor(normalize_y=False)</span></code> to ensure a correct comparison.</p></li>
+</ul>
+<p>Still KRR can fit the data when the mean is very non-zero (e.g. <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">+=</span> <span class="pre">1000</span></code>)
+since the hyperopt still finds correct params. Also with fixed <span class="math notranslate nohighlight">\(\ell\)</span> and
+<span class="math notranslate nohighlight">\(\eta\)</span> KRR and GP still produce the same weights <span class="math notranslate nohighlight">\(\ve\alpha\)</span> and predictions
+because they both solve <a class="reference internal" href="#equation-e-krr-solve">(1)</a>. However in case of <span class="math notranslate nohighlight">\(y\)</span> far away from
+zero, the hyperopt for <code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor(normalize_y=False)</span></code> fails
+because the LML is changed such that we can’t find a global opt any longer even
+for large param bounds up to say <code class="docutils literal notranslate"><span class="pre">[1e-10,</span> <span class="pre">1000]</span></code> for both <span class="math notranslate nohighlight">\(\ell\)</span> and <span class="math notranslate nohighlight">\(\eta\)</span>.
+This is because with <code class="docutils literal notranslate"><span class="pre">normalize_y=True</span></code>, the GP implementation zeros the data
+mean before doing anything since it implements Alg. 2.1 from
+<span id="id1">[<a class="reference internal" href="../../root.html#id8" title="Carl Edward Rasmussen and Christopher K. I. Williams. Gaussian Processes for Machine Learning. MIT Press, 2006. ISBN ISBN-10 0-262-18253-X. URL: http://www.gaussianprocess.org/gpml.">RW06</a>]</span> which assumes a zero mean
+function in the calculation of weights and LML. In the prediction the mean is
+added back at the end.</p>
+</section>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./content/gp_krr_hyperopt"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../gp_pred_comp/notebook_plot.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Prior and (noisy) posterior predictions</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="notebook_comp_plot.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Explore GPs and KRR with code</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Steve Schmerler<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>
