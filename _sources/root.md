@@ -14,7 +14,7 @@ implementing them (a.k.a. "learning by hacking").[^fn:excuse]
 Unless stated otherwise, we use the Gaussian radial basis function (a.k.a.
 squared exponential) as covariance ("kernel") function
 
-$$\kappa(\mathbf x_i, \mathbf x_j) = \exp\left(-\frac{\lVert\mathbf x_i - \mathbf x_j\rVert_2^2}{2\,\ell^2}\right)$$
+$$\kappa(\ve x_i, \ve x_j) = \exp\left(-\frac{\lVert\ve x_i - \ve x_j\rVert_2^2}{2\,\ell^2}\right)$$
 
 
 Notation:

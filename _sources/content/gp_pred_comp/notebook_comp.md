@@ -53,8 +53,8 @@ To ensure accurate comparisons, we
 
 First, we generate reference textbook results. We compare each tested GP library
 against them using `numpy.testing` tools. Since we don't calculate with
-actual training data, we generate random data inputs and targets $(\mathbf
-x_i \in \mathbb R^D, y_i \in \mathbb R)$.
+actual training data, we generate random data inputs and targets $(\ve x_i
+\in \mathbb R^D, y_i \in \mathbb R)$.
 
 We calculate GP prior and posterior data in the `predict` and
 `predict_noiseless` setting:
