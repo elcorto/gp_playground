@@ -92,6 +92,11 @@ const thebe_selector_output = ".output, .cell_output"
         <div class="bd-sidebar__top"><div class="navbar-brand-box">
     <a class="navbar-brand text-wrap" href="../../index.html">
       
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../../_static/logo.png" class="logo" alt="logo">
       
       
       <h1 class="site-logo" id="site-title">gp_playground</h1>
@@ -496,12 +501,15 @@ K(X,X)\)</span>, <span class="math notranslate nohighlight">\(\ma K'=K(X_*, X)\)
     <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">plot_gp</span><span class="p">(</span><span class="o">*</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="n">Box</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">std_color</span><span class="o">=</span><span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">transform_labels</span><span class="p">(</span><span class="s1">&#39;noise_level&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">box</span><span class="o">.</span><span class="n">noise_level</span><span class="si">}</span><span class="s2">   &quot;</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">transform_labels</span><span class="p">(</span><span class="s1">&#39;length_scale&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">box</span><span class="o">.</span><span class="n">length_scale</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">box</span><span class="o">.</span><span class="n">cov_title</span>
-    <span class="p">)</span>
+<span class="k">def</span> <span class="nf">plot_gp</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span> <span class="n">box</span><span class="p">:</span> <span class="n">Box</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">xi</span><span class="p">,</span> <span class="n">std_color</span><span class="o">=</span><span class="s2">&quot;tab:orange&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">set_title</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="n">set_title</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">transform_labels</span><span class="p">(</span><span class="s1">&#39;noise_level&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">box</span><span class="o">.</span><span class="n">noise_level</span><span class="si">}</span><span class="s2">   &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">transform_labels</span><span class="p">(</span><span class="s1">&#39;length_scale&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">=</span><span class="si">{</span><span class="n">box</span><span class="o">.</span><span class="n">length_scale</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">box</span><span class="o">.</span><span class="n">cov_title</span>
+        <span class="p">)</span>
 
     <span class="n">samples_kind</span> <span class="o">=</span> <span class="s2">&quot;prior&quot;</span> <span class="k">if</span> <span class="n">box</span><span class="o">.</span><span class="n">pri_post</span> <span class="o">==</span> <span class="s2">&quot;pri&quot;</span> <span class="k">else</span> <span class="s2">&quot;posterior&quot;</span>
     <span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">yy</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">samples</span><span class="o">.</span><span class="n">T</span><span class="p">):</span>
@@ -787,6 +795,12 @@ because of the <span class="math notranslate nohighlight">\(\sqrt{\cdot}\)</span
 <span class="c1">##</span>
 <span class="c1">##for ax in axs[2, :].flat:</span>
 <span class="c1">##    ax.set_ylim(-0.1, 0.5)</span>
+
+<span class="c1">### Make logo</span>
+<span class="c1">##fig, ax = plt.subplots()</span>
+<span class="c1">##plot_gp_post(box=d_post_pn, ax=ax, set_title=False)</span>
+<span class="c1">##ax.set_axis_off()</span>
+<span class="c1">##fig.savefig(&quot;logo.png&quot;)</span>
 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">is_interactive</span><span class="p">():</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>

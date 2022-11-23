@@ -170,12 +170,15 @@ def calc_gp(
     )
 
 
-def plot_gp(*, box: Box, ax, xi, std_color="tab:orange", x=None, y=None):
-    ax.set_title(
-        f"{transform_labels('noise_level')}={box.noise_level}   "
-        f"{transform_labels('length_scale')}={box.length_scale:.5f}"
-        "\n" + box.cov_title
-    )
+def plot_gp(
+    *, box: Box, ax, xi, std_color="tab:orange", x=None, y=None, set_title=True
+):
+    if set_title:
+        ax.set_title(
+            f"{transform_labels('noise_level')}={box.noise_level}   "
+            f"{transform_labels('length_scale')}={box.length_scale:.5f}"
+            "\n" + box.cov_title
+        )
 
     samples_kind = "prior" if box.pri_post == "pri" else "posterior"
     for ii, yy in enumerate(box.samples.T):
@@ -451,6 +454,12 @@ for ax in axs:
 ##
 ##for ax in axs[2, :].flat:
 ##    ax.set_ylim(-0.1, 0.5)
+
+### Make logo
+##fig, ax = plt.subplots()
+##plot_gp_post(box=d_post_pn, ax=ax, set_title=False)
+##ax.set_axis_off()
+##fig.savefig("logo.png")
 
 if not is_interactive():
     plt.show()
