@@ -2,10 +2,10 @@
   <img src="https://raw.githubusercontent.com/elcorto/gp_playground/main/book/logo.png" width="50%"><br>
 </p>
 
-**Check the [book content here](https://elcorto.github.io/gp_playground/root.html)**
+**Check the [book content here](https://elcorto.github.io/gp_playground/root.html)**.
 
-
-Build this repo locally: Follow the instructions below or check the CI pipline.
+This project uses [Jupyter Book](https://jupyterbook.org) and
+[jupytext](https://jupytext.readthedocs.io). To build locally, follow the instructions below or check the CI pipline.
 
 ```sh
 # https://virtualenvwrapper.readthedocs.io/en/latest/
@@ -31,6 +31,21 @@ there is no need to install the GPU version of torch.
 (gp_play) $ pip install -r requirements.txt
 ```
 
+Build
+
 ```sh
 (gp_play) $ ./generate-book.sh
+
+# If you only modified some notebook scripts (we use jupytext in the
+# background), pass their names. Else the script will purge are rebuild all.
+(gp_play) $ ./generate-book.sh book/content/gp_pred_comp/notebook_comp.py
+
+# If you only changed markdown files
+(gp_play) $ jb build book
+```
+
+View
+
+```sh
+$ some_browser book/_build/html/index.html
 ```
