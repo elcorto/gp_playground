@@ -30,7 +30,7 @@ Notation:
 
 * {cite}`rasmussen_2006_GaussianProcessesMachine, murphy_2023_ProbabilisticMachineLearningAdvanced, goertler_2019_VisualExplorationGaussiana, deisenroth_2020_PracticalGuideGaussian, kanagawa_2018_GaussianProcessesKernel`
 * [Blog post about GP vs. KRR][gp_krr_blog]
-* [This section](s:pred_noise) was inspired by a [discussion over at the sklearn issue
+* [This section](s:gp_pred_noise) was inspired by a [discussion over at the sklearn issue
   tracker][sklearn_issue]. Thanks!
 
 ```{bibliography}

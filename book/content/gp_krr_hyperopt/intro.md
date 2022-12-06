@@ -4,7 +4,7 @@ In this section we show that GPs and KRR are the same w.r.t. weights and
 predictions. They only differ in the way hyperparameter optimization is done.
 We use `sklearn` for all code examples.
 
-Below we give an introduction and in the [next section](gp-krr-code) we explore the
+Below we give an introduction and in the [next section](s:gp_krr_code) we explore the
 comparison using code examples.
 
 ## Kernel / covariance function
@@ -121,7 +121,8 @@ However, the covariance matrix we get from
 y_pred, y_cov = gp.predict(X, return_cov=True)
 ```
 
-will be different. For more details, see [this section](s:pred_noise).
+will be different. For more details, see [the `sklearn` part](s:gp_pred_comp_sklearn)
+of [this section](s:gp_pred_noise).
 
 #### GP optimizer
 

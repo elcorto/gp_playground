@@ -280,6 +280,7 @@ compare_gpytorch(gp, text_pos_noise)
 
 
 # %% [markdown]
+# (s:gp_pred_comp_sklearn)=
 # ## sklearn
 
 # %%
