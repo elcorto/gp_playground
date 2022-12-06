@@ -1,4 +1,4 @@
-(s:pred_noise)=
+(s:gp_pred_noise)=
 # The role of noise in GPs
 
 We show the difference between "noisy" and "noiseless" predictions w.r.t. the

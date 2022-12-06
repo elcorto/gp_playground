@@ -6,7 +6,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.1
+    jupytext_version: 1.14.2
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -292,6 +292,7 @@ gp = likelihood(model(T.from_numpy(X_pred)))
 compare_gpytorch(gp, text_pos_noise)
 ```
 
+(s:gp_pred_comp_sklearn)=
 ## sklearn
 
 ```{code-cell}

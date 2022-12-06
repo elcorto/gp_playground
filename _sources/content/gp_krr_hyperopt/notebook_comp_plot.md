@@ -6,7 +6,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.1
+    jupytext_version: 1.14.2
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -17,6 +17,7 @@ kernelspec:
 
 ```
 
+(s:gp_krr_code)=
 # Explore GPs and KRR with code
 
 +++

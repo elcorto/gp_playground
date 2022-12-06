@@ -346,6 +346,11 @@ title="Print to PDF"
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#gp-optimizer">
+       GP optimizer
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#hyperopt-objective-function">
        Hyperopt objective function
       </a>
@@ -353,8 +358,8 @@ title="Print to PDF"
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#gp-optimizer">
-     GP optimizer
+    <a class="reference internal nav-link" href="#changing-the-gp-optimizer">
+     Changing the GP optimizer
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -432,6 +437,11 @@ title="Print to PDF"
       </a>
      </li>
      <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#gp-optimizer">
+       GP optimizer
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
       <a class="reference internal nav-link" href="#hyperopt-objective-function">
        Hyperopt objective function
       </a>
@@ -439,8 +449,8 @@ title="Print to PDF"
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#gp-optimizer">
-     GP optimizer
+    <a class="reference internal nav-link" href="#changing-the-gp-optimizer">
+     Changing the GP optimizer
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -472,12 +482,11 @@ title="Print to PDF"
                 
   <section class="tex2jax_ignore mathjax_ignore" id="compare-gps-and-kernel-ridge-regression-krr">
 <h1>Compare GPs and kernel ridge regression (KRR)<a class="headerlink" href="#compare-gps-and-kernel-ridge-regression-krr" title="Permalink to this headline">#</a></h1>
-<p>Show that GPs and KRR are the same w.r.t. weights and predictions. They only
-differ in the way hyperparameter optimization is done.</p>
-<p>In order to underline the latter, we perform a hyperopt for a sklearn KRR and
-GP model using the same external optimizer which is not present in sklearn. We
-use <code class="docutils literal notranslate"><span class="pre">scipy.optimizer.differential_evolution</span></code> as an example of a global
-optimization method.</p>
+<p>In this section we show that GPs and KRR are the same w.r.t. weights and
+predictions. They only differ in the way hyperparameter optimization is done.
+We use <code class="docutils literal notranslate"><span class="pre">sklearn</span></code> for all code examples.</p>
+<p>Below we give an introduction and in the <a class="reference internal" href="notebook_comp_plot.html#s-gp-krr-code"><span class="std std-ref">next section</span></a> we explore the
+comparison using code examples.</p>
 <section id="kernel-covariance-function">
 <h2>Kernel / covariance function<a class="headerlink" href="#kernel-covariance-function" title="Permalink to this headline">#</a></h2>
 <p>We use the radial basis function (RBF) kernel function <span class="math notranslate nohighlight">\(\kappa(\cdot,\cdot)\)</span>,
@@ -487,6 +496,7 @@ is</p>
 \[K_{ij} = \kappa(\ve x_i, \ve x_j)\]</div>
 <p>Note that there are many other RBFs but <code class="docutils literal notranslate"><span class="pre">sklearn</span></code> only implements that one.</p>
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.gaussian_process.kernels</span> <span class="kn">import</span> <span class="n">RBF</span>
+
 <span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=...</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -497,24 +507,34 @@ is</p>
 <div class="math notranslate nohighlight" id="equation-e-krr-solve">
 <span class="eqno">(1)<a class="headerlink" href="#equation-e-krr-solve" title="Permalink to this equation">#</a></span>\[    (\ma K + \eta\,\ma I)\,\ve\alpha = \ve y\]</div>
 <p>for the weights <span class="math notranslate nohighlight">\(\ve\alpha\)</span> (called <code class="docutils literal notranslate"><span class="pre">KernelRidge.alpha_</span></code> in <code class="docutils literal notranslate"><span class="pre">sklearn</span></code>).</p>
-<p>We specify <span class="math notranslate nohighlight">\(\eta\)</span> as <code class="docutils literal notranslate"><span class="pre">alpha</span></code></p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">KernelRidge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">))</span>
+<p>We specify <span class="math notranslate nohighlight">\(\eta\)</span> = <code class="docutils literal notranslate"><span class="pre">noise_level</span></code> as <code class="docutils literal notranslate"><span class="pre">alpha</span></code></p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.kernel_ridge</span> <span class="kn">import</span> <span class="n">KernelRidge</span>
+
+<span class="n">krr</span> <span class="o">=</span> <span class="n">KernelRidge</span><span class="p">(</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">),</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 <p>Calling</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">KernelRidge</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">krr</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>solves <a class="reference internal" href="#equation-e-krr-solve">(1)</a> once.</p>
 </section>
 <section id="gaussianprocessregressor">
 <h2><code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code><a class="headerlink" href="#gaussianprocessregressor" title="Permalink to this headline">#</a></h2>
-<p>In addition to <code class="docutils literal notranslate"><span class="pre">RBF</span></code>, we can use a <code class="docutils literal notranslate"><span class="pre">WhiteKernel</span></code> “to learn global noise”, so
+<p>In addition to <code class="docutils literal notranslate"><span class="pre">RBF</span></code>, we can use a <code class="docutils literal notranslate"><span class="pre">WhiteKernel</span></code> “to learn the global noise”, so
 the kernel we use is a combination of two kernels which are responsible for
 modeling different aspects of the data (i.e. “kernel engineering”). The
 resulting kernel matrix is the same as the above, where</p>
 <div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.gaussian_process.kernels</span> <span class="kn">import</span> <span class="n">RBF</span><span class="p">,</span> <span class="n">WhiteKernel</span>
-<span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">)</span> <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">sklearn.gaussian_process</span> <span class="kn">import</span> <span class="n">GaussianProcessRegressor</span>
+
+<span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">)</span> <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">),</span>
+    <span class="o">...</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
 <p>results in</p>
@@ -525,29 +545,69 @@ resulting kernel matrix is the same as the above, where</p>
 <h3>Differences to KRR<a class="headerlink" href="#differences-to-krr" title="Permalink to this headline">#</a></h3>
 <section id="noise-in-whitekernel">
 <h4>Noise in <code class="docutils literal notranslate"><span class="pre">WhiteKernel</span></code><a class="headerlink" href="#noise-in-whitekernel" title="Permalink to this headline">#</a></h4>
+<p>The way to specify <span class="math notranslate nohighlight">\(\eta\)</span> as <code class="docutils literal notranslate"><span class="pre">noise_level</span></code> is to use <code class="docutils literal notranslate"><span class="pre">WhiteKernel</span></code> as in</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">)</span> <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">),</span>
+    <span class="o">...</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>One can also specify <span class="math notranslate nohighlight">\(\eta\)</span> as regularization parameter as in <code class="docutils literal notranslate"><span class="pre">KernelRidge</span></code></p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">),</span>
+    <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(in fact the default <code class="docutils literal notranslate"><span class="pre">alpha</span></code> value is not zero but <span class="math notranslate nohighlight">\(10^{-10}\)</span>), which has the exact same effect
+as in <code class="docutils literal notranslate"><span class="pre">KernelRidge</span></code> <em>when solving for the weights</em>. Thus, when calling</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>we get the same prediction as we would with</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">y_pred</span> <span class="o">=</span> <span class="n">krr</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, the covariance matrix we get from</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y_cov</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">return_cov</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>will be different. For more details, see <a class="reference internal" href="../gp_pred_comp/notebook_comp.html#s-gp-pred-comp-sklearn"><span class="std std-ref">the <code class="docutils literal notranslate"><span class="pre">sklearn</span></code> part</span></a>
+of <a class="reference internal" href="../gp_pred_comp/intro.html#s-gp-pred-noise"><span class="std std-ref">this section</span></a>.</p>
+</section>
+<section id="gp-optimizer">
+<h4>GP optimizer<a class="headerlink" href="#gp-optimizer" title="Permalink to this headline">#</a></h4>
 <p>In contrast to <code class="docutils literal notranslate"><span class="pre">KernelRidge</span></code>, calling</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">GaussianProcessRegressor</span><span class="p">(</span><span class="o">...</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">gp</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>does not solve for the weights once, but by default
 (<code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor(optimizer=...)</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>) uses a local
 optimizer to optimize all kernel hyperparameters, solving <a class="reference internal" href="#equation-e-krr-solve">(1)</a> in
 each step.</p>
-<p>One can also specify <span class="math notranslate nohighlight">\(\eta\)</span> as regularization parameter as in <code class="docutils literal notranslate"><span class="pre">KernelRidge</span></code></p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="n">GaussianProcessRegressor</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="n">noise_level</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>(in fact the default is not zero but 1e-10), which has the exact same effect
-<em>when solving for the weights</em>. But when calling
-<code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor.predict()</span></code>, the noise value will not be present. For
-more details, see <a class="reference internal" href="../gp_pred_comp/intro.html#s-pred-noise"><span class="std std-ref">this section</span></a>.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code> optimizer cannot optimize <span class="math notranslate nohighlight">\(\eta\)</span> when
-given as regularization parameter, since it only optimizes kernel
-hyperparameters, which is why we have to sneak it in via
+<p>Which parameters are optimized depends on what <code class="docutils literal notranslate"><span class="pre">kernel</span></code> we use:</p>
+<table class="colwidths-auto table">
+<thead>
+<tr class="row-odd"><th class="head"><p>kernel</p></th>
+<th class="head"><p>optimized hyperparameters</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">RBF(length_scale=length_scale)</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(\ell\)</span> = <code class="docutils literal notranslate"><span class="pre">length_scale</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">RBF(length_scale=length_scale)</span> <span class="pre">+</span> <span class="pre">WhiteKernel(noise_level=noise_level)</span></code></p></td>
+<td><p><span class="math notranslate nohighlight">\(\ell\)</span> = <code class="docutils literal notranslate"><span class="pre">length_scale</span></code>, <span class="math notranslate nohighlight">\(\eta\)</span> = <code class="docutils literal notranslate"><span class="pre">noise_level</span></code></p></td>
+</tr>
+</tbody>
+</table>
+<p>What this means is that the <code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code> optimizer cannot
+optimize <span class="math notranslate nohighlight">\(\eta\)</span> when given as regularization parameter, since it only optimizes
+kernel hyperparameters, which is why we have to sneak it in via
 <code class="docutils literal notranslate"><span class="pre">WhiteKernel(noise_level=)</span></code> where we interpret it as noise, while setting the
 regularization parameter <code class="docutils literal notranslate"><span class="pre">alpha=0</span></code>. This is a technicality and might be a bit
-confusing since from a textbook point of view, <span class="math notranslate nohighlight">\(\eta\)</span> is not a parameter
-of any kernel.</p>
+confusing since from a textbook point of view, <span class="math notranslate nohighlight">\(\eta\)</span> is not a parameter of any
+kernel.</p>
 </section>
 <section id="hyperopt-objective-function">
 <h4>Hyperopt objective function<a class="headerlink" href="#hyperopt-objective-function" title="Permalink to this headline">#</a></h4>
@@ -561,22 +621,22 @@ be the global min if the LML surface is convex, at least the neighborhood of a
 good start guess.</p>
 </section>
 </section>
-<section id="gp-optimizer">
-<h3>GP optimizer<a class="headerlink" href="#gp-optimizer" title="Permalink to this headline">#</a></h3>
+<section id="changing-the-gp-optimizer">
+<h3>Changing the GP optimizer<a class="headerlink" href="#changing-the-gp-optimizer" title="Permalink to this headline">#</a></h3>
 <p>In addition to using <code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor</span></code>’s internal optimizer code path,
-either by using the default <code class="docutils literal notranslate"><span class="pre">l_bfgs_b</span></code> local optimizer or by setting a custom one
-using <code class="docutils literal notranslate"><span class="pre">optimizer=my_optimizer</span></code>, we show how to optimize the GP’s
+either by using the default <code class="docutils literal notranslate"><span class="pre">l_bfgs_b</span></code> local optimizer or by setting a custom
+one using <code class="docutils literal notranslate"><span class="pre">optimizer=my_optimizer</span></code>, we show how to optimize the GP’s
 hyperparameters in the same way as any other model by setting
 <code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor(optimizer=None)</span></code> in combination with an external
 optimizer. With that, we can use either
 <code class="docutils literal notranslate"><span class="pre">GaussianProcessRegressor(alpha=noise_level)</span></code>, i.e. treat it as
-<code class="docutils literal notranslate"><span class="pre">KernelRidge(alpha=noise_level)</span></code>, or
-<code class="docutils literal notranslate"><span class="pre">WhiteKernel(noise_level=noise_level)</span></code> and get the exact same results.</p>
+<code class="docutils literal notranslate"><span class="pre">KernelRidge(alpha=noise_level)</span></code>, or <code class="docutils literal notranslate"><span class="pre">WhiteKernel(noise_level=noise_level)</span></code> and
+get the exact same results.</p>
 <p>We define a custom GP optimizer using <code class="docutils literal notranslate"><span class="pre">scipy.optimize.differential_evolution</span></code>
 (i) to show how this can be done in general and (ii) because the default local
-optimizer (<code class="docutils literal notranslate"><span class="pre">l_bfgs_b</span></code>), also with <code class="docutils literal notranslate"><span class="pre">n_restarts_optimizer&gt;0</span></code> can get stuck in local
-optima or on flat plateaus sometimes. Sometimes because the start guess is
-randomly selected from bounds (the docs are bleak on how to fix the RNG for
+optimizer (<code class="docutils literal notranslate"><span class="pre">l_bfgs_b</span></code>), also with <code class="docutils literal notranslate"><span class="pre">n_restarts_optimizer&gt;0</span></code> can get stuck in
+local optima or on flat plateaus sometimes. Sometimes because the start guess
+is randomly selected from bounds (the docs are bleak on how to fix the RNG for
 that, so we don’t).</p>
 </section>
 <section id="example-results-of-optimized-models">
@@ -584,12 +644,13 @@ that, so we don’t).</p>
 <p>GP, using the internal optimizer API and <code class="docutils literal notranslate"><span class="pre">RBF+WhiteKernel</span></code>:</p>
 <p><code class="docutils literal notranslate"><span class="pre">k1</span></code> is the Gaussian RBF kernel. <code class="docutils literal notranslate"><span class="pre">length_scale</span></code> is the optimized kernel width
 parameter. <code class="docutils literal notranslate"><span class="pre">k2</span></code> is the <code class="docutils literal notranslate"><span class="pre">WhiteKernel</span></code> with its optimized <code class="docutils literal notranslate"><span class="pre">noise_level</span></code> parameter.</p>
-<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="s1">&#39;k1&#39;</span><span class="p">:</span> <span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="mf">0.147</span><span class="p">),</span>
- <span class="s1">&#39;k1__length_scale&#39;</span><span class="p">:</span> <span class="mf">0.14696558218508174</span><span class="p">,</span>
- <span class="s1">&#39;k1__length_scale_bounds&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1e-05</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
- <span class="s1">&#39;k2&#39;</span><span class="p">:</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="mf">0.0882</span><span class="p">),</span>
- <span class="s1">&#39;k2__noise_level&#39;</span><span class="p">:</span> <span class="mf">0.08820850820059796</span><span class="p">,</span>
- <span class="s1">&#39;k2__noise_level_bounds&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">gp</span><span class="o">.</span><span class="n">kernel_</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
+<span class="go">{&#39;k1&#39;: RBF(length_scale=0.147),</span>
+<span class="go"> &#39;k1__length_scale&#39;: 0.14696558218508174,</span>
+<span class="go"> &#39;k1__length_scale_bounds&#39;: (1e-05, 2),</span>
+<span class="go"> &#39;k2&#39;: WhiteKernel(noise_level=0.0882),</span>
+<span class="go"> &#39;k2__noise_level&#39;: 0.08820850820059796,</span>
+<span class="go"> &#39;k2__noise_level_bounds&#39;: (0.001, 1)}</span>
 </pre></div>
 </div>
 <p>Fitted GP weights can be accessed by</p>
