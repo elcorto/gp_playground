@@ -1,12 +1,11 @@
 # Compare GPs and kernel ridge regression (KRR)
 
-Show that GPs and KRR are the same w.r.t. weights and predictions. They only
-differ in the way hyperparameter optimization is done.
+In this section we show that GPs and KRR are the same w.r.t. weights and
+predictions. They only differ in the way hyperparameter optimization is done.
+We use `sklearn` for all code examples.
 
-In order to underline the latter, we perform a hyperopt for a sklearn KRR and
-GP model using the same external optimizer which is not present in sklearn. We
-use `scipy.optimizer.differential_evolution` as an example of a global
-optimization method.
+Below we give an introduction and in the [next section](gp-krr-code) we explore the
+comparison using code examples.
 
 ## Kernel / covariance function
 
@@ -22,6 +21,7 @@ Note that there are many other RBFs but `sklearn` only implements that one.
 
 ```py
 from sklearn.gaussian_process.kernels import RBF
+
 RBF(length_scale=...)
 ```
 
@@ -36,30 +36,40 @@ We solve
 
 for the weights $\ve\alpha$ (called `KernelRidge.alpha_` in `sklearn`).
 
-We specify $\eta$ as `alpha`
+We specify $\eta$ = `noise_level` as `alpha`
 
 ```py
-KernelRidge(alpha=noise_level, kernel=RBF(length_scale=length_scale))
+from sklearn.kernel_ridge import KernelRidge
+
+krr = KernelRidge(
+    alpha=noise_level,
+    kernel=RBF(length_scale=length_scale),
+    )
 ```
 
 Calling
 
 ```py
-KernelRidge(...).fit(X, y)
+krr.fit(X, y)
 ```
 
 solves {eq}`e:krr_solve` once.
 
 ## `GaussianProcessRegressor`
 
-In addition to `RBF`, we can use a `WhiteKernel` "to learn global noise", so
+In addition to `RBF`, we can use a `WhiteKernel` "to learn the global noise", so
 the kernel we use is a combination of two kernels which are responsible for
 modeling different aspects of the data (i.e. "kernel engineering"). The
 resulting kernel matrix is the same as the above, where
 
 ```py
 from sklearn.gaussian_process.kernels import RBF, WhiteKernel
-RBF(length_scale=length_scale) + WhiteKernel(noise_level=noise_level)
+from sklearn.gaussian_process import GaussianProcessRegressor
+
+gp = GaussianProcessRegressor(
+    kernel=RBF(length_scale=length_scale) + WhiteKernel(noise_level=noise_level),
+    ...
+    )
 ```
 
 results in
@@ -74,10 +84,51 @@ and we solve {eq}`e:krr_solve` for $\ve\alpha$, also called `GaussianProcessRegr
 
 #### Noise in `WhiteKernel`
 
+The way to specify $\eta$ as `noise_level` is to use `WhiteKernel` as in
+
+```py
+gp = GaussianProcessRegressor(
+    kernel=RBF(length_scale=length_scale) + WhiteKernel(noise_level=noise_level),
+    ...
+    )
+```
+
+One can also specify $\eta$ as regularization parameter as in `KernelRidge`
+
+```py
+gp = GaussianProcessRegressor(
+    alpha=noise_level,
+    kernel=RBF(length_scale=length_scale),
+    ...)
+```
+
+(in fact the default `alpha` value is not zero but $10^{-10}$), which has the exact same effect
+as in `KernelRidge` *when solving for the weights*. Thus, when calling
+
+```py
+y_pred = gp.predict(X)
+```
+
+we get the same prediction as we would with
+
+```py
+y_pred = krr.predict(X)
+```
+
+However, the covariance matrix we get from
+
+```py
+y_pred, y_cov = gp.predict(X, return_cov=True)
+```
+
+will be different. For more details, see [this section](s:pred_noise).
+
+#### GP optimizer
+
 In contrast to `KernelRidge`, calling
 
 ```py
-GaussianProcessRegressor(...).fit(X, y)
+gp.fit(X, y)
 ```
 
 does not solve for the weights once, but by default
@@ -85,24 +136,22 @@ does not solve for the weights once, but by default
 optimizer to optimize all kernel hyperparameters, solving {eq}`e:krr_solve` in
 each step.
 
-One can also specify $\eta$ as regularization parameter as in `KernelRidge`
+Which parameters are optimized depends on what `kernel` we use:
 
-```py
-GaussianProcessRegressor(alpha=noise_level)
-```
 
-(in fact the default is not zero but 1e-10), which has the exact same effect
-*when solving for the weights*. But when calling
-`GaussianProcessRegressor.predict()`, the noise value will not be present. For
-more details, see [this section](s:pred_noise).
+kernel | optimized hyperparameters
+-|-
+`RBF(length_scale=length_scale)` | $\ell$ = `length_scale`
+`RBF(length_scale=length_scale) + WhiteKernel(noise_level=noise_level)` | $\ell$ = `length_scale`, $\eta$ = `noise_level`
 
-The `GaussianProcessRegressor` optimizer cannot optimize $\eta$ when
-given as regularization parameter, since it only optimizes kernel
-hyperparameters, which is why we have to sneak it in via
+What this means is that the `GaussianProcessRegressor` optimizer cannot
+optimize $\eta$ when given as regularization parameter, since it only optimizes
+kernel hyperparameters, which is why we have to sneak it in via
 `WhiteKernel(noise_level=)` where we interpret it as noise, while setting the
 regularization parameter `alpha=0`. This is a technicality and might be a bit
-confusing since from a textbook point of view, $\eta$ is not a parameter
-of any kernel.
+confusing since from a textbook point of view, $\eta$ is not a parameter of any
+kernel.
+
 
 #### Hyperopt objective function
 
@@ -115,23 +164,23 @@ local optimization, which can be fast if the LML evaluation is fast and it can
 be the global min if the LML surface is convex, at least the neighborhood of a
 good start guess.
 
-### GP optimizer
+### Changing the GP optimizer
 
 In addition to using `GaussianProcessRegressor`'s internal optimizer code path,
-either by using the default `l_bfgs_b` local optimizer or by setting a custom one
-using `optimizer=my_optimizer`, we show how to optimize the GP's
+either by using the default `l_bfgs_b` local optimizer or by setting a custom
+one using `optimizer=my_optimizer`, we show how to optimize the GP's
 hyperparameters in the same way as any other model by setting
 `GaussianProcessRegressor(optimizer=None)` in combination with an external
 optimizer. With that, we can use either
 `GaussianProcessRegressor(alpha=noise_level)`, i.e. treat it as
-`KernelRidge(alpha=noise_level)`, or
-`WhiteKernel(noise_level=noise_level)` and get the exact same results.
+`KernelRidge(alpha=noise_level)`, or `WhiteKernel(noise_level=noise_level)` and
+get the exact same results.
 
 We define a custom GP optimizer using `scipy.optimize.differential_evolution`
 (i) to show how this can be done in general and (ii) because the default local
-optimizer (`l_bfgs_b`), also with `n_restarts_optimizer>0` can get stuck in local
-optima or on flat plateaus sometimes. Sometimes because the start guess is
-randomly selected from bounds (the docs are bleak on how to fix the RNG for
+optimizer (`l_bfgs_b`), also with `n_restarts_optimizer>0` can get stuck in
+local optima or on flat plateaus sometimes. Sometimes because the start guess
+is randomly selected from bounds (the docs are bleak on how to fix the RNG for
 that, so we don't).
 
 ### Example results of optimized models
@@ -142,6 +191,7 @@ GP, using the internal optimizer API and `RBF+WhiteKernel`:
 parameter. `k2` is the `WhiteKernel` with its optimized `noise_level` parameter.
 
 ```py
+>>> gp.kernel_.get_params()
 {'k1': RBF(length_scale=0.147),
  'k1__length_scale': 0.14696558218508174,
  'k1__length_scale_bounds': (1e-05, 2),

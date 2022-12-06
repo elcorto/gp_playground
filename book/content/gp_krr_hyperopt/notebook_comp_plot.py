@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # %% [markdown]
+# (gp-krr-code)=
 # # Explore GPs and KRR with code
 
 
