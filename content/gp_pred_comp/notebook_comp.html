@@ -490,39 +490,39 @@ actual training data, we generate random data inputs and targets <span class="ma
 it since some libraries expose the possibility to construct this case.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import numpy as np
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-from common import (
-    textbook_prior,
-    textbook_posterior,
-    textbook_posterior_noise,
-    cov2std,
-)
-
-
-def rand(*size):
-    return rng.uniform(size=size)
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">textbook_prior</span><span class="p">,</span>
+    <span class="n">textbook_posterior</span><span class="p">,</span>
+    <span class="n">textbook_posterior_noise</span><span class="p">,</span>
+    <span class="n">cov2std</span><span class="p">,</span>
+<span class="p">)</span>
 
 
-rng = np.random.default_rng(123)
+<span class="k">def</span> <span class="nf">rand</span><span class="p">(</span><span class="o">*</span><span class="n">size</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
 
-X_train = rand(100, 5)
-y_train = rand(100)
-X_pred = rand(50, 5)
-noise_level = 0.1
-length_scale = 1
 
-text_pri = textbook_prior(noise_level=0, length_scale=length_scale)(X_pred)
-text_pri_noise = textbook_prior(
-    noise_level=noise_level, length_scale=length_scale
-)(X_pred)
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
 
-text_pos = textbook_posterior(
-    X_train, y_train, noise_level=noise_level, length_scale=length_scale
-)(X_pred)
-text_pos_noise = textbook_posterior_noise(
-    X_train, y_train, noise_level=noise_level, length_scale=length_scale
-)(X_pred)
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">y_train</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">X_pred</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">noise_level</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">length_scale</span> <span class="o">=</span> <span class="mi">1</span>
+
+<span class="n">text_pri</span> <span class="o">=</span> <span class="n">textbook_prior</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">)(</span><span class="n">X_pred</span><span class="p">)</span>
+<span class="n">text_pri_noise</span> <span class="o">=</span> <span class="n">textbook_prior</span><span class="p">(</span>
+    <span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span> <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span>
+<span class="p">)(</span><span class="n">X_pred</span><span class="p">)</span>
+
+<span class="n">text_pos</span> <span class="o">=</span> <span class="n">textbook_posterior</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span> <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span>
+<span class="p">)(</span><span class="n">X_pred</span><span class="p">)</span>
+<span class="n">text_pos_noise</span> <span class="o">=</span> <span class="n">textbook_posterior_noise</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span> <span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span>
+<span class="p">)(</span><span class="n">X_pred</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -531,59 +531,59 @@ text_pos_noise = textbook_posterior_noise(
 <h2>tinygp<a class="headerlink" href="#tinygp" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># =========================================================================
-# tinygp
-# =========================================================================
-import jax
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># =========================================================================</span>
+<span class="c1"># tinygp</span>
+<span class="c1"># =========================================================================</span>
+<span class="kn">import</span> <span class="nn">jax</span>
 
-jax.config.update(&quot;jax_enable_x64&quot;, True)
-from tinygp import GaussianProcess
-from tinygp.kernels import ExpSquared
-from tinygp.solvers import DirectSolver
-
-
-def compare_tinygp(gp, text_gp):
-    y_mean, y_std, y_cov = text_gp
-    np.testing.assert_allclose(y_mean, gp.loc)
-    np.testing.assert_allclose(y_std, np.sqrt(gp.variance))
-    np.testing.assert_allclose(y_cov, gp.covariance)
+<span class="n">jax</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="s2">&quot;jax_enable_x64&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tinygp</span> <span class="kn">import</span> <span class="n">GaussianProcess</span>
+<span class="kn">from</span> <span class="nn">tinygp.kernels</span> <span class="kn">import</span> <span class="n">ExpSquared</span>
+<span class="kn">from</span> <span class="nn">tinygp.solvers</span> <span class="kn">import</span> <span class="n">DirectSolver</span>
 
 
-# prior w/o noise
-gp = GaussianProcess(
-    kernel=ExpSquared(scale=length_scale),
-    X=X_pred,
-    diag=0,
-)
-compare_tinygp(gp, text_pri)
+<span class="k">def</span> <span class="nf">compare_tinygp</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_gp</span><span class="p">):</span>
+    <span class="n">y_mean</span><span class="p">,</span> <span class="n">y_std</span><span class="p">,</span> <span class="n">y_cov</span> <span class="o">=</span> <span class="n">text_gp</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_mean</span><span class="p">,</span> <span class="n">gp</span><span class="o">.</span><span class="n">loc</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_std</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gp</span><span class="o">.</span><span class="n">variance</span><span class="p">))</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_cov</span><span class="p">,</span> <span class="n">gp</span><span class="o">.</span><span class="n">covariance</span><span class="p">)</span>
 
-# prior w/ noise
-gp = GaussianProcess(
-    kernel=ExpSquared(scale=length_scale),
-    X=X_pred,
-    diag=noise_level,
-)
-compare_tinygp(gp, text_pri_noise)
 
-# posterior, like GPy predict_noiseless() = R&amp;W textbook eqns
-gp = GaussianProcess(
-    kernel=ExpSquared(scale=length_scale),
-    X=X_train,
-    solver=DirectSolver,
-    diag=noise_level,
-)
-cond = gp.condition(y_train, X_pred, diag=0)
-compare_tinygp(cond.gp, text_pos)
+<span class="c1"># prior w/o noise</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcess</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">ExpSquared</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">),</span>
+    <span class="n">X</span><span class="o">=</span><span class="n">X_pred</span><span class="p">,</span>
+    <span class="n">diag</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">compare_tinygp</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pri</span><span class="p">)</span>
 
-# posterior, like GPy predict() -- add noise_level to y_cov&#39;s diag
-gp = GaussianProcess(
-    kernel=ExpSquared(scale=length_scale),
-    X=X_train,
-    solver=DirectSolver,
-    diag=noise_level,
-)
-cond = gp.condition(y_train, X_pred, diag=noise_level)
-compare_tinygp(cond.gp, text_pos_noise)
+<span class="c1"># prior w/ noise</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcess</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">ExpSquared</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">),</span>
+    <span class="n">X</span><span class="o">=</span><span class="n">X_pred</span><span class="p">,</span>
+    <span class="n">diag</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">compare_tinygp</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pri_noise</span><span class="p">)</span>
+
+<span class="c1"># posterior, like GPy predict_noiseless() = R&amp;W textbook eqns</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcess</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">ExpSquared</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">),</span>
+    <span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="n">DirectSolver</span><span class="p">,</span>
+    <span class="n">diag</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">cond</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">condition</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">X_pred</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">compare_tinygp</span><span class="p">(</span><span class="n">cond</span><span class="o">.</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pos</span><span class="p">)</span>
+
+<span class="c1"># posterior, like GPy predict() -- add noise_level to y_cov&#39;s diag</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcess</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">ExpSquared</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">),</span>
+    <span class="n">X</span><span class="o">=</span><span class="n">X_train</span><span class="p">,</span>
+    <span class="n">solver</span><span class="o">=</span><span class="n">DirectSolver</span><span class="p">,</span>
+    <span class="n">diag</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">cond</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">condition</span><span class="p">(</span><span class="n">y_train</span><span class="p">,</span> <span class="n">X_pred</span><span class="p">,</span> <span class="n">diag</span><span class="o">=</span><span class="n">noise_level</span><span class="p">)</span>
+<span class="n">compare_tinygp</span><span class="p">(</span><span class="n">cond</span><span class="o">.</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pos_noise</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -598,44 +598,44 @@ compare_tinygp(cond.gp, text_pos_noise)
 <h2>GPy<a class="headerlink" href="#gpy" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># =========================================================================
-# GPy
-# =========================================================================
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># =========================================================================</span>
+<span class="c1"># GPy</span>
+<span class="c1"># =========================================================================</span>
 
-# Can&#39;t convince GPy to be more accurate than atol / rtol. There must be
-# hidden jitter defaults lurking around.
-
-
-def compare_gpy(pred_func, text_gp):
-    gp_mean, gp_cov = pred_func(X_pred, full_cov=True)
-    y_mean, y_std, y_cov = text_gp
-    np.testing.assert_allclose(y_mean, gp_mean[:, 0])
-    np.testing.assert_allclose(y_std, cov2std(gp_cov))
-    np.testing.assert_allclose(y_cov, gp_cov, rtol=1e-4)
+<span class="c1"># Can&#39;t convince GPy to be more accurate than atol / rtol. There must be</span>
+<span class="c1"># hidden jitter defaults lurking around.</span>
 
 
-# posterior
-import GPy
+<span class="k">def</span> <span class="nf">compare_gpy</span><span class="p">(</span><span class="n">pred_func</span><span class="p">,</span> <span class="n">text_gp</span><span class="p">):</span>
+    <span class="n">gp_mean</span><span class="p">,</span> <span class="n">gp_cov</span> <span class="o">=</span> <span class="n">pred_func</span><span class="p">(</span><span class="n">X_pred</span><span class="p">,</span> <span class="n">full_cov</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">y_mean</span><span class="p">,</span> <span class="n">y_std</span><span class="p">,</span> <span class="n">y_cov</span> <span class="o">=</span> <span class="n">text_gp</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_mean</span><span class="p">,</span> <span class="n">gp_mean</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_std</span><span class="p">,</span> <span class="n">cov2std</span><span class="p">(</span><span class="n">gp_cov</span><span class="p">))</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_cov</span><span class="p">,</span> <span class="n">gp_cov</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span>
 
-gpy_kernel = GPy.kern.RBF(
-    input_dim=X_train.shape[1],
-    lengthscale=length_scale,
-    variance=1,
-    inv_l=True,
-)
-gp = GPy.models.GPRegression(
-    X_train,
-    y_train[:, None],
-    gpy_kernel,
-    normalizer=False,
-    noise_var=noise_level,
-)
 
-# predict_noiseless()
-compare_gpy(gp.predict_noiseless, text_pos)
+<span class="c1"># posterior</span>
+<span class="kn">import</span> <span class="nn">GPy</span>
 
-# predict(): y_cov has noise_level added to the diag
-compare_gpy(gp.predict, text_pos_noise)
+<span class="n">gpy_kernel</span> <span class="o">=</span> <span class="n">GPy</span><span class="o">.</span><span class="n">kern</span><span class="o">.</span><span class="n">RBF</span><span class="p">(</span>
+    <span class="n">input_dim</span><span class="o">=</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+    <span class="n">lengthscale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">,</span>
+    <span class="n">variance</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">inv_l</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">GPy</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">GPRegression</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">],</span>
+    <span class="n">gpy_kernel</span><span class="p">,</span>
+    <span class="n">normalizer</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">noise_var</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># predict_noiseless()</span>
+<span class="n">compare_gpy</span><span class="p">(</span><span class="n">gp</span><span class="o">.</span><span class="n">predict_noiseless</span><span class="p">,</span> <span class="n">text_pos</span><span class="p">)</span>
+
+<span class="c1"># predict(): y_cov has noise_level added to the diag</span>
+<span class="n">compare_gpy</span><span class="p">(</span><span class="n">gp</span><span class="o">.</span><span class="n">predict</span><span class="p">,</span> <span class="n">text_pos_noise</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -652,83 +652,83 @@ warning in choleskies: failed to import cython module: falling back to numpy
 <h2>GPyTorch<a class="headerlink" href="#gpytorch" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># =========================================================================
-# GPyTorch
-# =========================================================================
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># =========================================================================</span>
+<span class="c1"># GPyTorch</span>
+<span class="c1"># =========================================================================</span>
 
-import gpytorch
-from gpytorch.likelihoods import GaussianLikelihood
-from gpytorch.constraints import Positive
-import torch as T
+<span class="kn">import</span> <span class="nn">gpytorch</span>
+<span class="kn">from</span> <span class="nn">gpytorch.likelihoods</span> <span class="kn">import</span> <span class="n">GaussianLikelihood</span>
+<span class="kn">from</span> <span class="nn">gpytorch.constraints</span> <span class="kn">import</span> <span class="n">Positive</span>
+<span class="kn">import</span> <span class="nn">torch</span> <span class="k">as</span> <span class="nn">T</span>
 
-# Despite all our efforts, can&#39;t convince gpytorch to be more accurate than
-# atol / rtol set below. There must be hidden jitter defaults lurking around.
-gpytorch.settings.verbose_linalg(True)
-gpytorch.settings.cholesky_jitter(float=0, double=0, half=0)
-gpytorch.settings.fast_computations(
-    covar_root_decomposition=False, log_prob=False, solves=False
-)
-gpytorch.settings.fast_pred_var(False)
-gpytorch.settings.linalg_dtypes(
-    default=T.float64, symeig=T.float64, cholesky=T.float64
-)
-
-
-def compare_gpytorch(gp, text_gp):
-    y_mean, y_std, y_cov = text_gp
-    np.testing.assert_allclose(y_mean, gp.mean.detach().numpy())
-    np.testing.assert_allclose(y_std, np.sqrt(gp.variance.detach().numpy()))
-    np.testing.assert_allclose(
-        y_cov, gp.covariance_matrix.detach().numpy(), rtol=1e-5
-    )
+<span class="c1"># Despite all our efforts, can&#39;t convince gpytorch to be more accurate than</span>
+<span class="c1"># atol / rtol set below. There must be hidden jitter defaults lurking around.</span>
+<span class="n">gpytorch</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">verbose_linalg</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">gpytorch</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">cholesky_jitter</span><span class="p">(</span><span class="nb">float</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">double</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">half</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">gpytorch</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">fast_computations</span><span class="p">(</span>
+    <span class="n">covar_root_decomposition</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">log_prob</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">solves</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">gpytorch</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">fast_pred_var</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">gpytorch</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">linalg_dtypes</span><span class="p">(</span>
+    <span class="n">default</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">symeig</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">cholesky</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">float64</span>
+<span class="p">)</span>
 
 
-def fixed(val):
-    return Positive(initial_value=val, transform=None, inv_transform=None)
+<span class="k">def</span> <span class="nf">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_gp</span><span class="p">):</span>
+    <span class="n">y_mean</span><span class="p">,</span> <span class="n">y_std</span><span class="p">,</span> <span class="n">y_cov</span> <span class="o">=</span> <span class="n">text_gp</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_mean</span><span class="p">,</span> <span class="n">gp</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_std</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gp</span><span class="o">.</span><span class="n">variance</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()))</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span>
+        <span class="n">y_cov</span><span class="p">,</span> <span class="n">gp</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-5</span>
+    <span class="p">)</span>
 
 
-class ExactGPModel(gpytorch.models.ExactGP):
-    &quot;&quot;&quot;API:
-    model.forward() -&gt; prior
-    model()         -&gt; posterior
-    &quot;&quot;&quot;
-
-    def __init__(self, X, y, likelihood):
-        super().__init__(X, y, likelihood)
-        kernel = gpytorch.kernels.RBFKernel(
-            lengthscale_constraint=fixed(length_scale),
-            eps=0,
-        )
-        self.mean_module = gpytorch.means.ZeroMean()
-        self.covar_module = kernel
-
-    def forward(self, X):
-        return gpytorch.distributions.MultivariateNormal(
-            self.mean_module(X), self.covar_module(X)
-        )
+<span class="k">def</span> <span class="nf">fixed</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Positive</span><span class="p">(</span><span class="n">initial_value</span><span class="o">=</span><span class="n">val</span><span class="p">,</span> <span class="n">transform</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inv_transform</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 
 
-likelihood = GaussianLikelihood(noise_constraint=fixed(noise_level))
-model = ExactGPModel(T.from_numpy(X_train), T.from_numpy(y_train), likelihood)
+<span class="k">class</span> <span class="nc">ExactGPModel</span><span class="p">(</span><span class="n">gpytorch</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">ExactGP</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;API:</span>
+<span class="sd">    model.forward() -&gt; prior</span>
+<span class="sd">    model()         -&gt; posterior</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
-# prior w/o noise: model.forward()
-gp = model.forward(T.from_numpy(X_pred))
-compare_gpytorch(gp, text_pri)
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">likelihood</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">likelihood</span><span class="p">)</span>
+        <span class="n">kernel</span> <span class="o">=</span> <span class="n">gpytorch</span><span class="o">.</span><span class="n">kernels</span><span class="o">.</span><span class="n">RBFKernel</span><span class="p">(</span>
+            <span class="n">lengthscale_constraint</span><span class="o">=</span><span class="n">fixed</span><span class="p">(</span><span class="n">length_scale</span><span class="p">),</span>
+            <span class="n">eps</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mean_module</span> <span class="o">=</span> <span class="n">gpytorch</span><span class="o">.</span><span class="n">means</span><span class="o">.</span><span class="n">ZeroMean</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">covar_module</span> <span class="o">=</span> <span class="n">kernel</span>
 
-# prior w/ noise: likelihood(model.forward())
-gp = likelihood(model.forward(T.from_numpy(X_pred)))
-compare_gpytorch(gp, text_pri_noise)
+    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">gpytorch</span><span class="o">.</span><span class="n">distributions</span><span class="o">.</span><span class="n">MultivariateNormal</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mean_module</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">covar_module</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="p">)</span>
 
-model.eval()
-likelihood.eval()
 
-# posterior, like GPy predict_noiseless(): model()
-gp = model(T.from_numpy(X_pred))
-compare_gpytorch(gp, text_pos)
+<span class="n">likelihood</span> <span class="o">=</span> <span class="n">GaussianLikelihood</span><span class="p">(</span><span class="n">noise_constraint</span><span class="o">=</span><span class="n">fixed</span><span class="p">(</span><span class="n">noise_level</span><span class="p">))</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">ExactGPModel</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> <span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y_train</span><span class="p">),</span> <span class="n">likelihood</span><span class="p">)</span>
 
-# posterior, like GPy predict(): likelihood(model())
-gp = likelihood(model(T.from_numpy(X_pred)))
-compare_gpytorch(gp, text_pos_noise)
+<span class="c1"># prior w/o noise: model.forward()</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">))</span>
+<span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pri</span><span class="p">)</span>
+
+<span class="c1"># prior w/ noise: likelihood(model.forward())</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">)))</span>
+<span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pri_noise</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">likelihood</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+<span class="c1"># posterior, like GPy predict_noiseless(): model()</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">))</span>
+<span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pos</span><span class="p">)</span>
+
+<span class="c1"># posterior, like GPy predict(): likelihood(model())</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">)))</span>
+<span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pos_noise</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -738,64 +738,64 @@ compare_gpytorch(gp, text_pos_noise)
 <span id="s-gp-pred-comp-sklearn"></span><h2>sklearn<a class="headerlink" href="#sklearn" title="Permalink to this headline">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># =========================================================================
-# sklearn
-# =========================================================================
-from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import RBF, WhiteKernel
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># =========================================================================</span>
+<span class="c1"># sklearn</span>
+<span class="c1"># =========================================================================</span>
+<span class="kn">from</span> <span class="nn">sklearn.gaussian_process</span> <span class="kn">import</span> <span class="n">GaussianProcessRegressor</span>
+<span class="kn">from</span> <span class="nn">sklearn.gaussian_process.kernels</span> <span class="kn">import</span> <span class="n">RBF</span><span class="p">,</span> <span class="n">WhiteKernel</span>
 
-# WhiteKernel API:
-#   k = WhiteKernel()
-#
-#   k(X) = np.eye(...) * noise_level
-#   k(X, X) = np.zeros(...)
-
-
-def compare_sklearn(gp, text_gp):
-    y_mean, y_std, y_cov = text_gp
-    gp_mean, gp_std = gp.predict(X_pred, return_std=True)
-    _, gp_cov = gp.predict(X_pred, return_cov=True)
-    np.testing.assert_allclose(y_mean, gp_mean)
-    np.testing.assert_allclose(y_std, gp_std)
-    np.testing.assert_allclose(y_cov, gp_cov)
+<span class="c1"># WhiteKernel API:</span>
+<span class="c1">#   k = WhiteKernel()</span>
+<span class="c1">#</span>
+<span class="c1">#   k(X) = np.eye(...) * noise_level</span>
+<span class="c1">#   k(X, X) = np.zeros(...)</span>
 
 
-# -------------------------------------------------------------------------
-# noise as regularization param, no noise in kernel
-# -------------------------------------------------------------------------
+<span class="k">def</span> <span class="nf">compare_sklearn</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_gp</span><span class="p">):</span>
+    <span class="n">y_mean</span><span class="p">,</span> <span class="n">y_std</span><span class="p">,</span> <span class="n">y_cov</span> <span class="o">=</span> <span class="n">text_gp</span>
+    <span class="n">gp_mean</span><span class="p">,</span> <span class="n">gp_std</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_pred</span><span class="p">,</span> <span class="n">return_std</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">gp_cov</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_pred</span><span class="p">,</span> <span class="n">return_cov</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_mean</span><span class="p">,</span> <span class="n">gp_mean</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_std</span><span class="p">,</span> <span class="n">gp_std</span><span class="p">)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_cov</span><span class="p">,</span> <span class="n">gp_cov</span><span class="p">)</span>
 
-# prior
-gp = GaussianProcessRegressor(
-    kernel=RBF(length_scale=length_scale),
-    alpha=noise_level,
-    optimizer=None,
-    normalize_y=False,
-)
-compare_sklearn(gp, text_pri)
 
-# posterior, like GPy predict_noiseless
-gp = gp.fit(X_train, y_train)
-compare_sklearn(gp, text_pos)
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="c1"># noise as regularization param, no noise in kernel</span>
+<span class="c1"># -------------------------------------------------------------------------</span>
 
-# -------------------------------------------------------------------------
-# noise as kernel param via WhiteKernel
-# -------------------------------------------------------------------------
+<span class="c1"># prior</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">),</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="n">noise_level</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">compare_sklearn</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pri</span><span class="p">)</span>
 
-# prior, calling kernel(X) in predict() retains noise in kernel via
-# WhiteKernel
-gp = GaussianProcessRegressor(
-    kernel=RBF(length_scale=length_scale)
-    + WhiteKernel(noise_level=noise_level),
-    alpha=0,
-    optimizer=None,
-    normalize_y=False,
-)
-compare_sklearn(gp, text_pri_noise)
+<span class="c1"># posterior, like GPy predict_noiseless</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">compare_sklearn</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pos</span><span class="p">)</span>
 
-# posterior, like GPy predict(), when using kernel(X, X) instead of kernel(X)
-# in sklearn&#39;s predict() then this is equal to GPy predict_noiseless()
-gp = gp.fit(X_train, y_train)
-compare_sklearn(gp, text_pos_noise)
+<span class="c1"># -------------------------------------------------------------------------</span>
+<span class="c1"># noise as kernel param via WhiteKernel</span>
+<span class="c1"># -------------------------------------------------------------------------</span>
+
+<span class="c1"># prior, calling kernel(X) in predict() retains noise in kernel via</span>
+<span class="c1"># WhiteKernel</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">GaussianProcessRegressor</span><span class="p">(</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="n">RBF</span><span class="p">(</span><span class="n">length_scale</span><span class="o">=</span><span class="n">length_scale</span><span class="p">)</span>
+    <span class="o">+</span> <span class="n">WhiteKernel</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="n">noise_level</span><span class="p">),</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">optimizer</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">normalize_y</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">compare_sklearn</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pri_noise</span><span class="p">)</span>
+
+<span class="c1"># posterior, like GPy predict(), when using kernel(X, X) instead of kernel(X)</span>
+<span class="c1"># in sklearn&#39;s predict() then this is equal to GPy predict_noiseless()</span>
+<span class="n">gp</span> <span class="o">=</span> <span class="n">gp</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">compare_sklearn</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pos_noise</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
