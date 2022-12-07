@@ -21,4 +21,8 @@ jupyter-book
 jupytext
 sphinxcontrib-bibtex
 
+# On of the jupy* things above pulls in ipython. Version 8.7 breaks syntax
+# highlighting. Temporary fix.
+ipython<8.7.0
+
 # vim:ft=conf
