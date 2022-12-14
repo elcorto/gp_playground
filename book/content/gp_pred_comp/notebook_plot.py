@@ -221,6 +221,8 @@ noise_level = 0.3
 y_lim = (-3, 3)
 
 # %% [markdown]
+# ## Prior, noiseless
+#
 # First we plot the prior, without noise (`predict_noiseless`).
 #
 # This is the standard textbook case. We set $\ell$ to some constant of our
@@ -248,6 +250,8 @@ _ = ax.set_ylim(*y_lim)
 
 
 # %% [markdown]
+# ## Prior, noisy
+#
 # Even though not super useful, we can certainly generate noisy prior samples
 # in the `predict` setting when using $\ma K'' + \sigma_n^2\,\ma I$ as prior
 # covariance.
@@ -270,6 +274,8 @@ _ = ax.set_ylim(*y_lim)
 
 
 # %% [markdown]
+# ## Posterior, noiseless, interpolation
+#
 # Now the posterior.
 #
 # For that, we do an $\ell$ optimization using 1$D$ toy data and `sklearn`
@@ -322,6 +328,7 @@ ax.legend(loc="upper right")
 _ = ax.set_ylim(*y_lim)
 
 # %% [markdown]
+# ## Posterior, noiseless, regression
 #
 # Regression ($\sigma_n^2>0$), `predict_noiseless`.
 #
@@ -340,6 +347,7 @@ _ = ax.set_ylim(*y_lim)
 
 
 # %% [markdown]
+# ## Posterior, noisy, regression
 #
 # Regression ($\sigma_n^2>0$), `predict`.
 #
