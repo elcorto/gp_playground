@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/493275233.svg)](https://zenodo.org/badge/latestdoi/493275233)
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/elcorto/gp_playground/main/book/logo.png" width="50%"><br>
 </p>
