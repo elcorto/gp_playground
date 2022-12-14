@@ -132,7 +132,7 @@ def calc_gp(
         if noise_level == 0:
             cov_title = r"$\Sigma=K''$"
         else:
-            cov_title = r"$\Sigma=K'' + \sigma_n^2$"
+            cov_title = r"$\Sigma=K'' + \sigma_n^2\,I$"
     else:
         if noise_level == 0:
             cov_title = r"$\Sigma=K'' - K'\,K^{-1}\,K'^\top$"
