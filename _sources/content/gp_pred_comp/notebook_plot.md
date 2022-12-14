@@ -6,7 +6,7 @@ jupytext:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.2
+    jupytext_version: 1.14.4
 kernelspec:
   display_name: Python 3 (ipykernel)
   language: python
@@ -148,7 +148,7 @@ def calc_gp(
         if noise_level == 0:
             cov_title = r"$\Sigma=K''$"
         else:
-            cov_title = r"$\Sigma=K'' + \sigma_n^2$"
+            cov_title = r"$\Sigma=K'' + \sigma_n^2\,I$"
     else:
         if noise_level == 0:
             cov_title = r"$\Sigma=K'' - K'\,K^{-1}\,K'^\top$"
@@ -236,6 +236,8 @@ noise_level = 0.3
 y_lim = (-3, 3)
 ```
 
+## Prior, noiseless
+
 First we plot the prior, without noise (`predict_noiseless`).
 
 This is the standard textbook case. We set $\ell$ to some constant of our
@@ -262,6 +264,8 @@ plot_gp(box=d_pri_0, ax=ax, xi=xi)
 _ = ax.set_ylim(*y_lim)
 ```
 
+## Prior, noisy
+
 Even though not super useful, we can certainly generate noisy prior samples
 in the `predict` setting when using $\ma K'' + \sigma_n^2\,\ma I$ as prior
 covariance.
@@ -282,6 +286,8 @@ fig, ax = plt.subplots(figsize=figsize_single)
 plot_gp(box=d_pri_p, ax=ax, xi=xi)
 _ = ax.set_ylim(*y_lim)
 ```
+
+## Posterior, noiseless, interpolation
 
 Now the posterior.
 
@@ -335,6 +341,7 @@ ax.legend(loc="upper right")
 _ = ax.set_ylim(*y_lim)
 ```
 
+## Posterior, noiseless, regression
 
 Regression ($\sigma_n^2>0$), `predict_noiseless`.
 
@@ -352,6 +359,7 @@ ax.legend(loc="upper right")
 _ = ax.set_ylim(*y_lim)
 ```
 
+## Posterior, noisy, regression
 
 Regression ($\sigma_n^2>0$), `predict`.
 

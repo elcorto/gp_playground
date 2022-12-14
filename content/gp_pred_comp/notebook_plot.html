@@ -331,12 +331,56 @@ title="Print to PDF"
     </ul>
   </div>
 </div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
 
     </div>
 </div>
 
 <!-- Table of contents -->
 <div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#prior-noiseless">
+   Prior, noiseless
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#prior-noisy">
+   Prior, noisy
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#posterior-noiseless-interpolation">
+   Posterior, noiseless, interpolation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#posterior-noiseless-regression">
+   Posterior, noiseless, regression
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#posterior-noisy-regression">
+   Posterior, noisy, regression
+  </a>
+ </li>
+</ul>
+
+    </nav>
 </div>
     </div>
     <div class="article row">
@@ -348,6 +392,39 @@ title="Print to PDF"
                 <div id="print-main-content">
                     <div id="jb-print-toc">
                         
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#prior-noiseless">
+   Prior, noiseless
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#prior-noisy">
+   Prior, noisy
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#posterior-noiseless-interpolation">
+   Posterior, noiseless, interpolation
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#posterior-noiseless-regression">
+   Posterior, noiseless, regression
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#posterior-noisy-regression">
+   Posterior, noisy, regression
+  </a>
+ </li>
+</ul>
+
+                        </nav>
                     </div>
                 </div>
             </div>
@@ -479,7 +556,7 @@ K(X,X)\)</span>, <span class="math notranslate nohighlight">\(\ma K'=K(X_*, X)\)
         <span class="k">if</span> <span class="n">noise_level</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">cov_title</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$\Sigma=K&#39;&#39;$&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">cov_title</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$\Sigma=K&#39;&#39; + \sigma_n^2$&quot;</span>
+            <span class="n">cov_title</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$\Sigma=K&#39;&#39; + \sigma_n^2\,I$&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">noise_level</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">cov_title</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;$\Sigma=K&#39;&#39; - K&#39;\,K^{-1}\,K&#39;^\top$&quot;</span>
@@ -569,6 +646,8 @@ K(X,X)\)</span>, <span class="math notranslate nohighlight">\(\ma K'=K(X_*, X)\)
 </div>
 </div>
 </div>
+<section id="prior-noiseless">
+<h2>Prior, noiseless<a class="headerlink" href="#prior-noiseless" title="Permalink to this headline">#</a></h2>
 <p>First we plot the prior, without noise (<code class="docutils literal notranslate"><span class="pre">predict_noiseless</span></code>).</p>
 <p>This is the standard textbook case. We set <span class="math notranslate nohighlight">\(\ell\)</span> to some constant of our
 liking since its value is not defined in the absence of training data.</p>
@@ -597,6 +676,9 @@ liking since its value is not defined in the absence of training data.</p>
 <img alt="../../_images/notebook_plot_7_0.png" src="../../_images/notebook_plot_7_0.png" />
 </div>
 </div>
+</section>
+<section id="prior-noisy">
+<h2>Prior, noisy<a class="headerlink" href="#prior-noisy" title="Permalink to this headline">#</a></h2>
 <p>Even though not super useful, we can certainly generate noisy prior samples
 in the <code class="docutils literal notranslate"><span class="pre">predict</span></code> setting when using <span class="math notranslate nohighlight">\(\ma K'' + \sigma_n^2\,\ma I\)</span> as prior
 covariance.</p>
@@ -620,6 +702,9 @@ covariance.</p>
 <img alt="../../_images/notebook_plot_9_0.png" src="../../_images/notebook_plot_9_0.png" />
 </div>
 </div>
+</section>
+<section id="posterior-noiseless-interpolation">
+<h2>Posterior, noiseless, interpolation<a class="headerlink" href="#posterior-noiseless-interpolation" title="Permalink to this headline">#</a></h2>
 <p>Now the posterior.</p>
 <p>For that, we do an <span class="math notranslate nohighlight">\(\ell\)</span> optimization using 1<span class="math notranslate nohighlight">\(D\)</span> toy data and <code class="docutils literal notranslate"><span class="pre">sklearn</span></code>
 with fixed <span class="math notranslate nohighlight">\(\sigma_n^2\)</span>:</p>
@@ -675,6 +760,9 @@ with fixed <span class="math notranslate nohighlight">\(\sigma_n^2\)</span>:</p>
 <img alt="../../_images/notebook_plot_13_0.png" src="../../_images/notebook_plot_13_0.png" />
 </div>
 </div>
+</section>
+<section id="posterior-noiseless-regression">
+<h2>Posterior, noiseless, regression<a class="headerlink" href="#posterior-noiseless-regression" title="Permalink to this headline">#</a></h2>
 <p>Regression (<span class="math notranslate nohighlight">\(\sigma_n^2&gt;0\)</span>), <code class="docutils literal notranslate"><span class="pre">predict_noiseless</span></code>.</p>
 <p>You will see a plot like this also in text books. For instance
 <span id="id3">[<a class="reference internal" href="../../root.html#id7" title="Kevin P. Murphy. Probabilistic Machine Learning: Advanced Topics (draft version). MIT Press, 2022. URL: https://probml.github.io/pml-book/book2.html.">Mur22</a>]</span> has this in fig.
@@ -694,6 +782,9 @@ with fixed <span class="math notranslate nohighlight">\(\sigma_n^2\)</span>:</p>
 <img alt="../../_images/notebook_plot_15_0.png" src="../../_images/notebook_plot_15_0.png" />
 </div>
 </div>
+</section>
+<section id="posterior-noisy-regression">
+<h2>Posterior, noisy, regression<a class="headerlink" href="#posterior-noisy-regression" title="Permalink to this headline">#</a></h2>
 <p>Regression (<span class="math notranslate nohighlight">\(\sigma_n^2&gt;0\)</span>), <code class="docutils literal notranslate"><span class="pre">predict</span></code>.</p>
 <p>This is the same as above in terms of optimized <span class="math notranslate nohighlight">\(\ell\)</span>, <span class="math notranslate nohighlight">\(\sigma_n^2\)</span> value
 (fixed here, usually also optimized), fit weights <span class="math notranslate nohighlight">\(\ve\alpha\)</span> and thus
@@ -811,6 +902,7 @@ because of the <span class="math notranslate nohighlight">\(\sqrt{\cdot}\)</span
 <img alt="../../_images/notebook_plot_18_0.png" src="../../_images/notebook_plot_18_0.png" />
 </div>
 </div>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
