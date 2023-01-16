@@ -661,25 +661,14 @@ warning in choleskies: failed to import cython module: falling back to numpy
 <span class="kn">from</span> <span class="nn">gpytorch.constraints</span> <span class="kn">import</span> <span class="n">Positive</span>
 <span class="kn">import</span> <span class="nn">torch</span> <span class="k">as</span> <span class="nn">T</span>
 
-<span class="c1"># Despite all our efforts, can&#39;t convince gpytorch to be more accurate than</span>
-<span class="c1"># atol / rtol set below. There must be hidden jitter defaults lurking around.</span>
-<span class="n">gpytorch</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">verbose_linalg</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">gpytorch</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">cholesky_jitter</span><span class="p">(</span><span class="nb">float</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">double</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">half</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">gpytorch</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">fast_computations</span><span class="p">(</span>
-    <span class="n">covar_root_decomposition</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">log_prob</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">solves</span><span class="o">=</span><span class="kc">False</span>
-<span class="p">)</span>
-<span class="n">gpytorch</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">fast_pred_var</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
-<span class="n">gpytorch</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">linalg_dtypes</span><span class="p">(</span>
-    <span class="n">default</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">symeig</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">cholesky</span><span class="o">=</span><span class="n">T</span><span class="o">.</span><span class="n">float64</span>
-<span class="p">)</span>
-
 
 <span class="k">def</span> <span class="nf">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_gp</span><span class="p">):</span>
     <span class="n">y_mean</span><span class="p">,</span> <span class="n">y_std</span><span class="p">,</span> <span class="n">y_cov</span> <span class="o">=</span> <span class="n">text_gp</span>
     <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_mean</span><span class="p">,</span> <span class="n">gp</span><span class="o">.</span><span class="n">mean</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">())</span>
     <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span><span class="n">y_std</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gp</span><span class="o">.</span><span class="n">variance</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()))</span>
     <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_allclose</span><span class="p">(</span>
-        <span class="n">y_cov</span><span class="p">,</span> <span class="n">gp</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-5</span>
+        <span class="n">y_cov</span><span class="p">,</span>
+        <span class="n">gp</span><span class="o">.</span><span class="n">covariance_matrix</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">(),</span>
     <span class="p">)</span>
 
 
@@ -708,27 +697,45 @@ warning in choleskies: failed to import cython module: falling back to numpy
         <span class="p">)</span>
 
 
+<span class="c1"># Setting gpytorch.settings.linalg_dtypes() is not enough. We need to force</span>
+<span class="c1"># float64 torch-wide to get accurate results. In fact, this is the only</span>
+<span class="c1"># setting we need. We don&#39;t even need to set the cholesky_jitter to zero, so</span>
+<span class="c1"># probably gpytorch tries to solve w/o it first?</span>
+<span class="n">T</span><span class="o">.</span><span class="n">set_default_dtype</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
 <span class="n">likelihood</span> <span class="o">=</span> <span class="n">GaussianLikelihood</span><span class="p">(</span><span class="n">noise_constraint</span><span class="o">=</span><span class="n">fixed</span><span class="p">(</span><span class="n">noise_level</span><span class="p">))</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">ExactGPModel</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_train</span><span class="p">),</span> <span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">y_train</span><span class="p">),</span> <span class="n">likelihood</span><span class="p">)</span>
-
-<span class="c1"># prior w/o noise: model.forward()</span>
-<span class="n">gp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">))</span>
-<span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pri</span><span class="p">)</span>
-
-<span class="c1"># prior w/ noise: likelihood(model.forward())</span>
-<span class="n">gp</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">)))</span>
-<span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pri_noise</span><span class="p">)</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 <span class="n">likelihood</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
-<span class="c1"># posterior, like GPy predict_noiseless(): model()</span>
-<span class="n">gp</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">))</span>
-<span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pos</span><span class="p">)</span>
+<span class="k">with</span> <span class="p">(</span>
+    <span class="n">T</span><span class="o">.</span><span class="n">no_grad</span><span class="p">(),</span>
+    <span class="c1">##gpytorch.settings.cholesky_jitter(float=0, double=0, half=0),</span>
+    <span class="c1">##gpytorch.settings.fast_computations(</span>
+    <span class="c1">##    covar_root_decomposition=False, log_prob=False, solves=False</span>
+    <span class="c1">##),</span>
+    <span class="c1">##gpytorch.settings.fast_pred_var(False),</span>
+    <span class="c1">##gpytorch.settings.linalg_dtypes(</span>
+    <span class="c1">##    default=T.float64, symeig=T.float64, cholesky=T.float64</span>
+    <span class="c1">##),</span>
+<span class="p">):</span>
 
-<span class="c1"># posterior, like GPy predict(): likelihood(model())</span>
-<span class="n">gp</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">)))</span>
-<span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pos_noise</span><span class="p">)</span>
+    <span class="c1"># prior w/o noise: model.forward()</span>
+    <span class="n">gp</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">))</span>
+    <span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pri</span><span class="p">)</span>
+
+    <span class="c1"># prior w/ noise: likelihood(model.forward())</span>
+    <span class="n">gp</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">)))</span>
+    <span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pri_noise</span><span class="p">)</span>
+
+    <span class="c1"># posterior, like GPy predict_noiseless(): model()</span>
+    <span class="n">gp</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">))</span>
+    <span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pos</span><span class="p">)</span>
+
+    <span class="c1"># posterior, like GPy predict(): likelihood(model())</span>
+    <span class="n">gp</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">T</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X_pred</span><span class="p">)))</span>
+    <span class="n">compare_gpytorch</span><span class="p">(</span><span class="n">gp</span><span class="p">,</span> <span class="n">text_pos_noise</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
