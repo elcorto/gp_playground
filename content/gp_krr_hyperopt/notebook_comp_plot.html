@@ -457,12 +457,12 @@ title="Print to PDF"
 
 
 <span class="k">def</span> <span class="nf">gt_func</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Ground truth&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ground truth&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="mf">0.1</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span>
 
 
 <span class="k">def</span> <span class="nf">gaussian_noise</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rng</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Constant Gaussian noise.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Constant Gaussian noise.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">sigma</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
 
@@ -472,13 +472,13 @@ title="Print to PDF"
 
 
 <span class="k">def</span> <span class="nf">de_callback</span><span class="p">(</span><span class="n">xk</span><span class="p">,</span> <span class="n">convergence</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Callback for differential_evolution that prints the best individual per</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback for differential_evolution that prints the best individual per</span>
 <span class="sd">    iteration.&quot;&quot;&quot;</span>
     <span class="c1">##ic(xk)</span>
 
 
 <span class="k">def</span> <span class="nf">de_callback_logscale</span><span class="p">(</span><span class="n">xk</span><span class="p">,</span> <span class="n">convergence</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Callback for differential_evolution that prints the best individual per</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback for differential_evolution that prints the best individual per</span>
 <span class="sd">    iteration.</span>
 
 <span class="sd">    Since GaussianProcessRegressor&#39;s hyper optimizer code path internally works</span>
@@ -491,7 +491,7 @@ title="Print to PDF"
 
 
 <span class="k">def</span> <span class="nf">gp_optimizer</span><span class="p">(</span><span class="n">obj_func</span><span class="p">,</span> <span class="n">initial_theta</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Custom optimizer for GaussianProcessRegressor using</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Custom optimizer for GaussianProcessRegressor using</span>
 <span class="sd">    differential_evolution.</span>
 
 <span class="sd">    Ignore initial_theta since we need only bounds for differential_evolution.</span>
@@ -524,7 +524,7 @@ title="Print to PDF"
 
 <span class="c1">##from sklearn.model_selection import cross_val_score</span>
 <span class="k">def</span> <span class="nf">simple_cv</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">cv</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Same as</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Same as</span>
 
 <span class="sd">        -cross_val_score(model, X, y, cv=cv, scoring=&quot;neg_mean_squared_error&quot;)</span>
 
@@ -554,7 +554,7 @@ title="Print to PDF"
 
 
 <span class="k">class</span> <span class="nc">HyperOpt</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;Optimize hyper params of a sklearn model using</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Optimize hyper params of a sklearn model using</span>
 <span class="sd">    differential_evolution.&quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span> <span class="n">get_model</span><span class="p">,</span> <span class="n">logscale</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -880,12 +880,12 @@ title="Print to PDF"
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ic| params_gp_0: array([0.11021769, 0.05521954])
-ic| params_gp_1: array([0.11021771, 0.05521953])
-ic| params_gp_2: array([0.11021771, 0.05521953])
-ic| params_gp_3: array([0.11021771, 0.05521953])
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>ic| params_gp_0: array([0.1102177 , 0.05521954])
+ic| params_gp_1: array([0.11021772, 0.05521953])
+ic| params_gp_2: array([0.11021772, 0.05521953])
+ic| params_gp_3: array([0.11021772, 0.05521953])
 ic| params_gp_3_nolog: array([0.11021768, 0.05521953])
-ic| params_krr: array([0.15470176, 0.01443063])
+ic| params_krr: array([0.1547018 , 0.01443047])
 ic| params_krr_nolog: array([0.15470279, 0.01442918])
 </pre></div>
 </div>

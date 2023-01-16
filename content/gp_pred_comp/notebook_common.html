@@ -384,7 +384,7 @@ translation of the core equations of
 
 
 <span class="k">def</span> <span class="nf">sample_y</span><span class="p">(</span><span class="n">y_mean</span><span class="p">,</span> <span class="n">y_cov</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">123</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;What GaussianProcessRegressor.sample_y() does, but since sklearn can&#39;t</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;What GaussianProcessRegressor.sample_y() does, but since sklearn can&#39;t</span>
 <span class="sd">    do predict_noiseless() and generate noiseless samples when WhiteKernel is</span>
 <span class="sd">    used, it is easier to have custom sample_y code.</span>
 
@@ -397,7 +397,7 @@ translation of the core equations of
 
 
 <span class="k">def</span> <span class="nf">textbook_prior</span><span class="p">(</span><span class="n">noise_level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kernel_kwds</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    R&amp;W 2006, eq. 2.17 (if noise_level=0)</span>
 <span class="sd">        X*        = X_pred  = X&#39;</span>
 <span class="sd">        K(X*, X*) = K_pp    = K&#39;&#39;</span>
@@ -416,7 +416,7 @@ translation of the core equations of
 
 
 <span class="k">def</span> <span class="nf">textbook_posterior</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">noise_level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kernel_kwds</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    R&amp;W 2006, eqs. 2.23, 2.24</span>
 <span class="sd">        X         = X_train</span>
 <span class="sd">        X*        = X_pred  = X&#39;</span>
@@ -443,7 +443,7 @@ translation of the core equations of
 
 
 <span class="k">def</span> <span class="nf">textbook_posterior_noise</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Same as textbook_posterior, only that</span>
 
 <span class="sd">        y_cov += np.eye(X_pred.shape[0]) * noise_level</span>
