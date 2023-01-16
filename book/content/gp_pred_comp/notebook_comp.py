@@ -209,25 +209,14 @@ from gpytorch.likelihoods import GaussianLikelihood
 from gpytorch.constraints import Positive
 import torch as T
 
-# Despite all our efforts, can't convince gpytorch to be more accurate than
-# atol / rtol set below. There must be hidden jitter defaults lurking around.
-gpytorch.settings.verbose_linalg(True)
-gpytorch.settings.cholesky_jitter(float=0, double=0, half=0)
-gpytorch.settings.fast_computations(
-    covar_root_decomposition=False, log_prob=False, solves=False
-)
-gpytorch.settings.fast_pred_var(False)
-gpytorch.settings.linalg_dtypes(
-    default=T.float64, symeig=T.float64, cholesky=T.float64
-)
-
 
 def compare_gpytorch(gp, text_gp):
     y_mean, y_std, y_cov = text_gp
     np.testing.assert_allclose(y_mean, gp.mean.detach().numpy())
     np.testing.assert_allclose(y_std, np.sqrt(gp.variance.detach().numpy()))
     np.testing.assert_allclose(
-        y_cov, gp.covariance_matrix.detach().numpy(), rtol=1e-5
+        y_cov,
+        gp.covariance_matrix.detach().numpy(),
     )
 
 
@@ -256,27 +245,45 @@ class ExactGPModel(gpytorch.models.ExactGP):
         )
 
 
+# Setting gpytorch.settings.linalg_dtypes() is not enough. We need to force
+# float64 torch-wide to get accurate results. In fact, this is the only
+# setting we need. We don't even need to set the cholesky_jitter to zero, so
+# probably gpytorch tries to solve w/o it first?
+T.set_default_dtype(T.float64)
+
 likelihood = GaussianLikelihood(noise_constraint=fixed(noise_level))
 model = ExactGPModel(T.from_numpy(X_train), T.from_numpy(y_train), likelihood)
-
-# prior w/o noise: model.forward()
-gp = model.forward(T.from_numpy(X_pred))
-compare_gpytorch(gp, text_pri)
-
-# prior w/ noise: likelihood(model.forward())
-gp = likelihood(model.forward(T.from_numpy(X_pred)))
-compare_gpytorch(gp, text_pri_noise)
 
 model.eval()
 likelihood.eval()
 
-# posterior, like GPy predict_noiseless(): model()
-gp = model(T.from_numpy(X_pred))
-compare_gpytorch(gp, text_pos)
+with (
+    T.no_grad(),
+    ##gpytorch.settings.cholesky_jitter(float=0, double=0, half=0),
+    ##gpytorch.settings.fast_computations(
+    ##    covar_root_decomposition=False, log_prob=False, solves=False
+    ##),
+    ##gpytorch.settings.fast_pred_var(False),
+    ##gpytorch.settings.linalg_dtypes(
+    ##    default=T.float64, symeig=T.float64, cholesky=T.float64
+    ##),
+):
 
-# posterior, like GPy predict(): likelihood(model())
-gp = likelihood(model(T.from_numpy(X_pred)))
-compare_gpytorch(gp, text_pos_noise)
+    # prior w/o noise: model.forward()
+    gp = model.forward(T.from_numpy(X_pred))
+    compare_gpytorch(gp, text_pri)
+
+    # prior w/ noise: likelihood(model.forward())
+    gp = likelihood(model.forward(T.from_numpy(X_pred)))
+    compare_gpytorch(gp, text_pri_noise)
+
+    # posterior, like GPy predict_noiseless(): model()
+    gp = model(T.from_numpy(X_pred))
+    compare_gpytorch(gp, text_pos)
+
+    # posterior, like GPy predict(): likelihood(model())
+    gp = likelihood(model(T.from_numpy(X_pred)))
+    compare_gpytorch(gp, text_pos_noise)
 
 
 # %% [markdown]
