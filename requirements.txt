@@ -8,9 +8,6 @@ Gpy
 scikit-learn
 gpytorch
 
-# Optional for gpytorch, numpy fallback
-cython
-
 # plotting
 matplotlib
 python-box
