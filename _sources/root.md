@@ -25,18 +25,19 @@ Notation:
 * posterior predictive variance: $\sigma^2$
 
 
-
 **Resources**
 
-* {cite}`rasmussen_2006_GaussianProcessesMachine, murphy_2023_ProbabilisticMachineLearningAdvanced, goertler_2019_VisualExplorationGaussiana, deisenroth_2020_PracticalGuideGaussian, kanagawa_2018_GaussianProcessesKernel`
+* [Our own intro to GPs and kernel methods talk][talk]
 * [Blog post about GP vs. KRR][gp_krr_blog]
 * [This section](s:gp_pred_noise) was inspired by a [discussion over at the sklearn issue
   tracker][sklearn_issue]. Thanks!
+* Books and publications listed below: {cite}`rasmussen_2006_GaussianProcessesMachine, murphy_2023_ProbabilisticMachineLearningAdvanced, goertler_2019_VisualExplorationGaussiana, deisenroth_2020_PracticalGuideGaussian, kanagawa_2018_GaussianProcessesKernel`
 
 ```{bibliography}
 ```
 
 [gp_krr_blog]: https://gregorygundersen.com/blog/2020/01/06/kernel-gp-regression
 [sklearn_issue]: https://github.com/scikit-learn/scikit-learn/issues/22945
+[talk]: https://figshare.com/articles/presentation/Introduction_to_kernel_methods_and_Gaussian_processes/22032650
 [^fn:excuse]: And is an excuse to play with JupyterBook.
 
