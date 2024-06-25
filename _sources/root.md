@@ -27,7 +27,9 @@ Notation:
 
 **Resources**
 
-* [Our own intro to GPs and kernel methods talk][talk]
+* Our own
+  * [Intro to GPs and kernel methods talk][talk_gp_krr]
+  * [GP talk][talk_gp] (new)
 * [Blog post about GP vs. KRR][gp_krr_blog]
 * [This section](s:gp_pred_noise) was inspired by a [discussion over at the sklearn issue
   tracker][sklearn_issue]. Thanks!
@@ -39,8 +41,10 @@ Notation:
 
 **Citing**
 
-If you like to cite this resource, you can use this BibTeX entry:
-
+The [source code](https://github.com/elcorto/gp_playground) and this book are
+licensed under the [BSD 3-Clause License][license]. If you re-use material
+from this work or just like to cite it, then either use this BibTeX
+entry
 
 ```bibtex
 @Online{schmerler_GPPlayground,
@@ -52,10 +56,13 @@ If you like to cite this resource, you can use this BibTeX entry:
 }
 ```
 
+or [the DOI `10.5281/zenodo.7439202`][doi].
+
 
 [gp_krr_blog]: https://gregorygundersen.com/blog/2020/01/06/kernel-gp-regression
 [sklearn_issue]: https://github.com/scikit-learn/scikit-learn/issues/22945
-[talk]: https://figshare.com/articles/presentation/Introduction_to_kernel_methods_and_Gaussian_processes/22032650
+[talk_gp_krr]: https://figshare.com/articles/presentation/Introduction_to_kernel_methods_and_Gaussian_processes/22032650
+[talk_gp]: https://figshare.com/articles/presentation/Introduction_to_Gaussian_processes/25988176
+[license]: https://github.com/elcorto/gp_playground/blob/main/LICENSE
+[doi]: https://zenodo.org/doi/10.5281/zenodo.7439202
 [^fn:excuse]: And is an excuse to play with JupyterBook.
-
-

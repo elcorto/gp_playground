@@ -1,0 +1,114 @@
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/nbclient/client.py", line 1314, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# =========================================================================
+# GPy
+# =========================================================================
+
+# Can't convince GPy to be more accurate than atol / rtol. There must be
+# hidden jitter defaults lurking around.
+
+
+def compare_gpy(pred_func, text_gp):
+    gp_mean, gp_cov = pred_func(X_pred, full_cov=True)
+    y_mean, y_std, y_cov = text_gp
+    np.testing.assert_allclose(y_mean, gp_mean[:, 0])
+    np.testing.assert_allclose(y_std, cov2std(gp_cov))
+    np.testing.assert_allclose(y_cov, gp_cov, rtol=1e-4)
+
+
+# posterior
+import GPy
+
+gpy_kernel = GPy.kern.RBF(
+    input_dim=X_train.shape[1],
+    lengthscale=length_scale,
+    variance=1,
+    inv_l=True,
+)
+gp = GPy.models.GPRegression(
+    X_train,
+    y_train[:, None],
+    gpy_kernel,
+    normalizer=False,
+    noise_var=noise_level,
+)
+
+# predict_noiseless()
+compare_gpy(gp.predict_noiseless, text_pos)
+
+# predict(): y_cov has noise_level added to the diag
+compare_gpy(gp.predict, text_pos_noise)
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mAttributeError[0m                            Traceback (most recent call last)
+Cell [0;32mIn[3], line 18[0m
+[1;32m     14[0m     np[38;5;241m.[39mtesting[38;5;241m.[39massert_allclose(y_cov, gp_cov, rtol[38;5;241m=[39m[38;5;241m1e-4[39m)
+[1;32m     17[0m [38;5;66;03m# posterior[39;00m
+[0;32m---> 18[0m [38;5;28;01mimport[39;00m [38;5;21;01mGPy[39;00m
+[1;32m     20[0m gpy_kernel [38;5;241m=[39m GPy[38;5;241m.[39mkern[38;5;241m.[39mRBF(
+[1;32m     21[0m     input_dim[38;5;241m=[39mX_train[38;5;241m.[39mshape[[38;5;241m1[39m],
+[1;32m     22[0m     lengthscale[38;5;241m=[39mlength_scale,
+[1;32m     23[0m     variance[38;5;241m=[39m[38;5;241m1[39m,
+[1;32m     24[0m     inv_l[38;5;241m=[39m[38;5;28;01mTrue[39;00m,
+[1;32m     25[0m )
+[1;32m     26[0m gp [38;5;241m=[39m GPy[38;5;241m.[39mmodels[38;5;241m.[39mGPRegression(
+[1;32m     27[0m     X_train,
+[1;32m     28[0m     y_train[:, [38;5;28;01mNone[39;00m],
+[0;32m   (...)[0m
+[1;32m     31[0m     noise_var[38;5;241m=[39mnoise_level,
+[1;32m     32[0m )
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/GPy/__init__.py:16[0m
+[1;32m     14[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m [38;5;28;01mimport[39;00m testing
+[1;32m     15[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m [38;5;28;01mimport[39;00m kern
+[0;32m---> 16[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m [38;5;28;01mimport[39;00m plotting
+[1;32m     18[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mutil[39;00m [38;5;28;01mimport[39;00m normalizer
+[1;32m     20[0m [38;5;66;03m# backwards compatibility[39;00m
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/GPy/plotting/__init__.py:156[0m
+[1;32m    154[0m [38;5;28;01mtry[39;00m:
+[1;32m    155[0m     lib [38;5;241m=[39m config[38;5;241m.[39mget([38;5;124m'[39m[38;5;124mplotting[39m[38;5;124m'[39m, [38;5;124m'[39m[38;5;124mlibrary[39m[38;5;124m'[39m)
+[0;32m--> 156[0m     [43mchange_plotting_library[49m[43m([49m[43mlib[49m[43m)[49m
+[1;32m    157[0m [38;5;28;01mexcept[39;00m NoOptionError:
+[1;32m    158[0m     [38;5;28mprint[39m([38;5;124m"[39m[38;5;124mNo plotting library was specified in config file. [39m[38;5;130;01m\n[39;00m[38;5;132;01m{}[39;00m[38;5;124m"[39m[38;5;241m.[39mformat(error_suggestion))
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/GPy/plotting/__init__.py:35[0m, in [0;36mchange_plotting_library[0;34m(lib, **kwargs)[0m
+[1;32m     33[0m [38;5;28;01mif[39;00m lib [38;5;241m==[39m [38;5;124m'[39m[38;5;124mmatplotlib[39m[38;5;124m'[39m:
+[1;32m     34[0m     [38;5;28;01mimport[39;00m [38;5;21;01mmatplotlib[39;00m
+[0;32m---> 35[0m     [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mmatplot_dep[39;00m[38;5;21;01m.[39;00m[38;5;21;01mplot_definitions[39;00m [38;5;28;01mimport[39;00m MatplotlibPlots
+[1;32m     36[0m     [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mmatplot_dep[39;00m [38;5;28;01mimport[39;00m visualize, mapping_plots, priors_plots, ssgplvm, svig_plots, variational_plots, img_plots
+[1;32m     37[0m     current_lib[[38;5;241m0[39m] [38;5;241m=[39m MatplotlibPlots()
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/GPy/plotting/matplot_dep/plot_definitions.py:34[0m
+[1;32m     32[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m.[39;00m[38;5;21;01mabstract_plotting_library[39;00m [38;5;28;01mimport[39;00m AbstractPlottingLibrary
+[1;32m     33[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m.[39;00m [38;5;28;01mimport[39;00m Tango
+[0;32m---> 34[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m [38;5;28;01mimport[39;00m defaults
+[1;32m     35[0m [38;5;28;01mfrom[39;00m [38;5;21;01mmatplotlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mcolors[39;00m [38;5;28;01mimport[39;00m LinearSegmentedColormap
+[1;32m     36[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01mcontrollers[39;00m [38;5;28;01mimport[39;00m ImshowController, ImAnnotateController
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.14/x64/lib/python3.10/site-packages/GPy/plotting/matplot_dep/defaults.py:47[0m
+[1;32m     45[0m [38;5;66;03m# Data plots:[39;00m
+[1;32m     46[0m data_1d [38;5;241m=[39m [38;5;28mdict[39m(lw[38;5;241m=[39m[38;5;241m1.5[39m, marker[38;5;241m=[39m[38;5;124m'[39m[38;5;124mx[39m[38;5;124m'[39m, color[38;5;241m=[39m[38;5;124m'[39m[38;5;124mk[39m[38;5;124m'[39m)
+[0;32m---> 47[0m data_2d [38;5;241m=[39m [38;5;28mdict[39m(s[38;5;241m=[39m[38;5;241m35[39m, edgecolors[38;5;241m=[39m[38;5;124m'[39m[38;5;124mnone[39m[38;5;124m'[39m, linewidth[38;5;241m=[39m[38;5;241m0.[39m, cmap[38;5;241m=[39m[43mcm[49m[38;5;241;43m.[39;49m[43mget_cmap[49m([38;5;124m'[39m[38;5;124mhot[39m[38;5;124m'[39m), alpha[38;5;241m=[39m[38;5;241m.5[39m)
+[1;32m     48[0m inducing_1d [38;5;241m=[39m [38;5;28mdict[39m(lw[38;5;241m=[39m[38;5;241m0[39m, s[38;5;241m=[39m[38;5;241m500[39m, color[38;5;241m=[39mTango[38;5;241m.[39mcolorsHex[[38;5;124m'[39m[38;5;124mdarkRed[39m[38;5;124m'[39m])
+[1;32m     49[0m inducing_2d [38;5;241m=[39m [38;5;28mdict[39m(s[38;5;241m=[39m[38;5;241m17[39m, edgecolor[38;5;241m=[39m[38;5;124m'[39m[38;5;124mk[39m[38;5;124m'[39m, linewidth[38;5;241m=[39m[38;5;241m.4[39m, color[38;5;241m=[39m[38;5;124m'[39m[38;5;124mwhite[39m[38;5;124m'[39m, alpha[38;5;241m=[39m[38;5;241m.5[39m, marker[38;5;241m=[39m[38;5;124m'[39m[38;5;124m^[39m[38;5;124m'[39m)
+
+[0;31mAttributeError[0m: module 'matplotlib.cm' has no attribute 'get_cmap'
+
