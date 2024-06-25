@@ -2,10 +2,7 @@
 # pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
 ##torch
 
-# This Gpy (most recent one (2023-06)) uses a deprecated numpy feature. Using
-# a slighty older numpy fixes this.
-numpy<=1.24
-Gpy==1.10.0
+GPy>=1.13
 
 tinygp
 scikit-learn
@@ -15,8 +12,7 @@ matplotlib
 python-box
 icecream
 
-# Newer jupyter-book versions mess up root.md rendering.
-jupyter-book==0.13.0
+jupyter-book>=1.0
 jupytext
 sphinxcontrib-bibtex
 
