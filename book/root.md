@@ -27,7 +27,9 @@ Notation:
 
 **Resources**
 
-* [Our own intro to GPs and kernel methods talk][talk]
+* Our own
+  * [Intro to GPs and kernel methods talk][talk_gp_krr]
+  * [GP talk][talk_gp] (new)
 * [Blog post about GP vs. KRR][gp_krr_blog]
 * [This section](s:gp_pred_noise) was inspired by a [discussion over at the sklearn issue
   tracker][sklearn_issue]. Thanks!
@@ -55,7 +57,6 @@ If you like to cite this resource, you can use this BibTeX entry:
 
 [gp_krr_blog]: https://gregorygundersen.com/blog/2020/01/06/kernel-gp-regression
 [sklearn_issue]: https://github.com/scikit-learn/scikit-learn/issues/22945
-[talk]: https://figshare.com/articles/presentation/Introduction_to_kernel_methods_and_Gaussian_processes/22032650
+[talk_gp_krr]: https://figshare.com/articles/presentation/Introduction_to_kernel_methods_and_Gaussian_processes/22032650
+[talk_gp]: https://figshare.com/articles/presentation/Introduction_to_Gaussian_processes/25988176
 [^fn:excuse]: And is an excuse to play with JupyterBook.
-
-
