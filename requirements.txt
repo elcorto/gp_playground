@@ -2,7 +2,10 @@
 # pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
 ##torch
 
-GPy>=1.13
+GPy >= 1.13
+# At least GPy 1.13.1 requires a matplotlib that has matplotlib.cm.get_cmap.
+# https://matplotlib.org/stable/api/prev_api_changes/api_changes_3.9.0.html#top-level-cmap-registration-and-access-functions-in-mpl-cm
+matplotlib < 3.9
 
 tinygp
 scikit-learn
@@ -12,12 +15,12 @@ matplotlib
 python-box
 icecream
 
-jupyter-book>=1.0
+jupyter-book >= 1.0
 jupytext
 sphinxcontrib-bibtex
 
 # On of the jupy* things above pulls in ipython. Version 8.7 breaks syntax
 # highlighting. 8.9.0 seems fine.
-ipython>=8.9.0
+ipython >= 8.9.0
 
 # vim:ft=conf
