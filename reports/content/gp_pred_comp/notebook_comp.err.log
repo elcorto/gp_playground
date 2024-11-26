@@ -1,0 +1,189 @@
+Traceback (most recent call last):
+  File "/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/nbclient/client.py", line 1314, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+  File "/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+  File "/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/asyncio/base_events.py", line 649, in run_until_complete
+    return future.result()
+  File "/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+# =========================================================================
+# tinygp
+# =========================================================================
+import jax
+
+jax.config.update("jax_enable_x64", True)
+from tinygp import GaussianProcess
+from tinygp.kernels import ExpSquared
+from tinygp.solvers import DirectSolver
+
+
+def compare_tinygp(gp, text_gp):
+    y_mean, y_std, y_cov = text_gp
+    np.testing.assert_allclose(y_mean, gp.loc)
+    np.testing.assert_allclose(y_std, np.sqrt(gp.variance))
+    np.testing.assert_allclose(y_cov, gp.covariance)
+
+
+# prior w/o noise
+gp = GaussianProcess(
+    kernel=ExpSquared(scale=length_scale),
+    X=X_pred,
+    diag=0,
+)
+compare_tinygp(gp, text_pri)
+
+# prior w/ noise
+gp = GaussianProcess(
+    kernel=ExpSquared(scale=length_scale),
+    X=X_pred,
+    diag=noise_level,
+)
+compare_tinygp(gp, text_pri_noise)
+
+# posterior, like GPy predict_noiseless() = R&W textbook eqns
+gp = GaussianProcess(
+    kernel=ExpSquared(scale=length_scale),
+    X=X_train,
+    solver=DirectSolver,
+    diag=noise_level,
+)
+cond = gp.condition(y_train, X_pred, diag=0)
+compare_tinygp(cond.gp, text_pos)
+
+# posterior, like GPy predict() -- add noise_level to y_cov's diag
+gp = GaussianProcess(
+    kernel=ExpSquared(scale=length_scale),
+    X=X_train,
+    solver=DirectSolver,
+    diag=noise_level,
+)
+cond = gp.condition(y_train, X_pred, diag=noise_level)
+compare_tinygp(cond.gp, text_pos_noise)
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mAttributeError[0m                            Traceback (most recent call last)
+Cell [0;32mIn[2], line 7[0m
+[1;32m      4[0m [38;5;28;01mimport[39;00m [38;5;21;01mjax[39;00m
+[1;32m      6[0m jax[38;5;241m.[39mconfig[38;5;241m.[39mupdate([38;5;124m"[39m[38;5;124mjax_enable_x64[39m[38;5;124m"[39m, [38;5;28;01mTrue[39;00m)
+[0;32m----> 7[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtinygp[39;00m [38;5;28;01mimport[39;00m GaussianProcess
+[1;32m      8[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtinygp[39;00m[38;5;21;01m.[39;00m[38;5;21;01mkernels[39;00m [38;5;28;01mimport[39;00m ExpSquared
+[1;32m      9[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtinygp[39;00m[38;5;21;01m.[39;00m[38;5;21;01msolvers[39;00m [38;5;28;01mimport[39;00m DirectSolver
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/tinygp/__init__.py:11[0m
+[1;32m      1[0m [38;5;124;03m"""[39;00m
+[1;32m      2[0m [38;5;124;03m``tinygp`` is an extremely lightweight library for building Gaussian Process[39;00m
+[1;32m      3[0m [38;5;124;03mmodels in Python, built on top of `jax <https://github.com/google/jax>`_. The[39;00m
+[0;32m   (...)[0m
+[1;32m      8[0m [38;5;124;03m:ref:`tutorials` for a more complete introduction.[39;00m
+[1;32m      9[0m [38;5;124;03m"""[39;00m
+[0;32m---> 11[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtinygp[39;00m [38;5;28;01mimport[39;00m (
+[1;32m     12[0m     kernels [38;5;28;01mas[39;00m kernels,
+[1;32m     13[0m     noise [38;5;28;01mas[39;00m noise,
+[1;32m     14[0m     solvers [38;5;28;01mas[39;00m solvers,
+[1;32m     15[0m     transforms [38;5;28;01mas[39;00m transforms,
+[1;32m     16[0m )
+[1;32m     17[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtinygp[39;00m[38;5;21;01m.[39;00m[38;5;21;01mgp[39;00m [38;5;28;01mimport[39;00m GaussianProcess [38;5;28;01mas[39;00m GaussianProcess
+[1;32m     18[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtinygp[39;00m[38;5;21;01m.[39;00m[38;5;21;01mtinygp_version[39;00m [38;5;28;01mimport[39;00m __version__ [38;5;28;01mas[39;00m __version__
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/tinygp/kernels/__init__.py:33[0m
+[1;32m      1[0m [38;5;124;03m"""[39;00m
+[1;32m      2[0m [38;5;124;03mThe primary model building interface in ``tinygp`` is via "kernels", which are[39;00m
+[1;32m      3[0m [38;5;124;03mtypically constructed as sums and products of objects defined in this[39;00m
+[0;32m   (...)[0m
+[1;32m      7[0m [38;5;124;03mfundamental building blocks.[39;00m
+[1;32m      8[0m [38;5;124;03m"""[39;00m
+[1;32m     10[0m __all__ [38;5;241m=[39m [
+[1;32m     11[0m     [38;5;124m"[39m[38;5;124mquasisep[39m[38;5;124m"[39m,
+[1;32m     12[0m     [38;5;124m"[39m[38;5;124mDistance[39m[38;5;124m"[39m,
+[0;32m   (...)[0m
+[1;32m     30[0m     [38;5;124m"[39m[38;5;124mRationalQuadratic[39m[38;5;124m"[39m,
+[1;32m     31[0m ]
+[0;32m---> 33[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtinygp[39;00m[38;5;21;01m.[39;00m[38;5;21;01mkernels[39;00m [38;5;28;01mimport[39;00m quasisep
+[1;32m     34[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtinygp[39;00m[38;5;21;01m.[39;00m[38;5;21;01mkernels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mbase[39;00m [38;5;28;01mimport[39;00m (
+[1;32m     35[0m     Conditioned,
+[1;32m     36[0m     Constant,
+[0;32m   (...)[0m
+[1;32m     42[0m     Sum,
+[1;32m     43[0m )
+[1;32m     44[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtinygp[39;00m[38;5;21;01m.[39;00m[38;5;21;01mkernels[39;00m[38;5;21;01m.[39;00m[38;5;21;01mdistance[39;00m [38;5;28;01mimport[39;00m Distance, L1Distance, L2Distance
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/tinygp/kernels/quasisep.py:31[0m
+[1;32m     28[0m [38;5;28;01mfrom[39;00m [38;5;21;01mabc[39;00m [38;5;28;01mimport[39;00m abstractmethod
+[1;32m     29[0m [38;5;28;01mfrom[39;00m [38;5;21;01mtyping[39;00m [38;5;28;01mimport[39;00m Any
+[0;32m---> 31[0m [38;5;28;01mimport[39;00m [38;5;21;01mequinox[39;00m [38;5;28;01mas[39;00m [38;5;21;01meqx[39;00m
+[1;32m     32[0m [38;5;28;01mimport[39;00m [38;5;21;01mjax[39;00m
+[1;32m     33[0m [38;5;28;01mimport[39;00m [38;5;21;01mjax[39;00m[38;5;21;01m.[39;00m[38;5;21;01mnumpy[39;00m [38;5;28;01mas[39;00m [38;5;21;01mjnp[39;00m
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/equinox/__init__.py:3[0m
+[1;32m      1[0m [38;5;28;01mimport[39;00m [38;5;21;01mimportlib[39;00m[38;5;21;01m.[39;00m[38;5;21;01mmetadata[39;00m
+[0;32m----> 3[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m [38;5;28;01mimport[39;00m internal [38;5;28;01mas[39;00m internal, nn [38;5;28;01mas[39;00m nn
+[1;32m      4[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_ad[39;00m [38;5;28;01mimport[39;00m (
+[1;32m      5[0m     filter_closure_convert [38;5;28;01mas[39;00m filter_closure_convert,
+[1;32m      6[0m     filter_custom_jvp [38;5;28;01mas[39;00m filter_custom_jvp,
+[0;32m   (...)[0m
+[1;32m     11[0m     filter_vjp [38;5;28;01mas[39;00m filter_vjp,
+[1;32m     12[0m )
+[1;32m     13[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_callback[39;00m [38;5;28;01mimport[39;00m filter_pure_callback [38;5;28;01mas[39;00m filter_pure_callback
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/equinox/internal/__init__.py:24[0m
+[1;32m     14[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_debug[39;00m [38;5;28;01mimport[39;00m (
+[1;32m     15[0m     announce_jaxpr_p [38;5;28;01mas[39;00m announce_jaxpr_p,
+[1;32m     16[0m     announce_transform [38;5;28;01mas[39;00m announce_transform,
+[1;32m     17[0m     debug_backward_nan [38;5;28;01mas[39;00m debug_backward_nan,
+[1;32m     18[0m )
+[1;32m     19[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_errors[39;00m [38;5;28;01mimport[39;00m (
+[1;32m     20[0m     branched_error_if [38;5;28;01mas[39;00m branched_error_if,
+[1;32m     21[0m     branched_error_p [38;5;28;01mas[39;00m branched_error_p,
+[1;32m     22[0m     error_if [38;5;28;01mas[39;00m error_if,
+[1;32m     23[0m )
+[0;32m---> 24[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_finalise_jaxpr[39;00m [38;5;28;01mimport[39;00m (
+[1;32m     25[0m     finalise_eval_jaxpr [38;5;28;01mas[39;00m finalise_eval_jaxpr,
+[1;32m     26[0m     finalise_fn [38;5;28;01mas[39;00m finalise_fn,
+[1;32m     27[0m     finalise_jaxpr [38;5;28;01mas[39;00m finalise_jaxpr,
+[1;32m     28[0m     finalise_jaxpr_as_fn [38;5;28;01mas[39;00m finalise_jaxpr_as_fn,
+[1;32m     29[0m     finalise_make_jaxpr [38;5;28;01mas[39;00m finalise_make_jaxpr,
+[1;32m     30[0m     primitive_finalisations [38;5;28;01mas[39;00m primitive_finalisations,
+[1;32m     31[0m     register_impl_finalisation [38;5;28;01mas[39;00m register_impl_finalisation,
+[1;32m     32[0m )
+[1;32m     33[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_loop[39;00m [38;5;28;01mimport[39;00m scan [38;5;28;01mas[39;00m scan, while_loop [38;5;28;01mas[39;00m while_loop
+[1;32m     34[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_misc[39;00m [38;5;28;01mimport[39;00m (
+[1;32m     35[0m     ContainerMeta [38;5;28;01mas[39;00m ContainerMeta,
+[1;32m     36[0m     eval_empty [38;5;28;01mas[39;00m eval_empty,
+[1;32m     37[0m     eval_zero [38;5;28;01mas[39;00m eval_zero,
+[1;32m     38[0m     scan_trick [38;5;28;01mas[39;00m scan_trick,
+[1;32m     39[0m )
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/equinox/internal/_finalise_jaxpr.py:184[0m
+[1;32m    182[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_debug[39;00m [38;5;28;01mimport[39;00m announce_jaxpr_p
+[1;32m    183[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_errors[39;00m [38;5;28;01mimport[39;00m branched_error_p
+[0;32m--> 184[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_noinline[39;00m [38;5;28;01mimport[39;00m noinline_p
+[1;32m    185[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_nontraceable[39;00m [38;5;28;01mimport[39;00m nonbatchable_p, nondifferentiable_backward_p, nontraceable_p
+[1;32m    186[0m [38;5;28;01mfrom[39;00m [38;5;21;01m.[39;00m[38;5;21;01m_unvmap[39;00m [38;5;28;01mimport[39;00m unvmap_all_p, unvmap_any_p, unvmap_max_p
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/equinox/internal/_noinline.py:371[0m
+[1;32m    369[0m ad[38;5;241m.[39mprimitive_transposes[noinline_p] [38;5;241m=[39m _noinline_transpose
+[1;32m    370[0m batching[38;5;241m.[39mprimitive_batchers[noinline_p] [38;5;241m=[39m _noinline_batch
+[0;32m--> 371[0m [43mjax[49m[38;5;241;43m.[39;49m[43mcore[49m[38;5;241;43m.[39;49m[43mpp_eqn_rules[49m[noinline_p] [38;5;241m=[39m _noinline_pretty_print
+[1;32m    372[0m mlir[38;5;241m.[39mregister_lowering(noinline_p, _noinline_mlir)
+[1;32m    375[0m _fn_to_index [38;5;241m=[39m {}
+
+File [0;32m/opt/hostedtoolcache/Python/3.10.15/x64/lib/python3.10/site-packages/jax/_src/deprecations.py:52[0m, in [0;36mdeprecation_getattr.<locals>.getattr[0;34m(name)[0m
+[1;32m     50[0m message, fn [38;5;241m=[39m deprecations[name]
+[1;32m     51[0m [38;5;28;01mif[39;00m fn [38;5;129;01mis[39;00m [38;5;28;01mNone[39;00m:  [38;5;66;03m# Is the deprecation accelerated?[39;00m
+[0;32m---> 52[0m   [38;5;28;01mraise[39;00m [38;5;167;01mAttributeError[39;00m(message)
+[1;32m     53[0m warnings[38;5;241m.[39mwarn(message, [38;5;167;01mDeprecationWarning[39;00m, stacklevel[38;5;241m=[39m[38;5;241m2[39m)
+[1;32m     54[0m [38;5;28;01mreturn[39;00m fn
+
+[0;31mAttributeError[0m: jax.core.pp_eqn_rules was removed in JAX v0.4.34.
+

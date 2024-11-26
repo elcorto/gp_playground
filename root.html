@@ -16,17 +16,19 @@
     document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
     document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
   </script>
+  <!-- 
+    this give us a css class that will be invisible only if js is disabled 
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-
-  
-  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
-<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+  <link href="_static/styles/theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=26a4bc78f4c0ddb94549" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=a3416100" />
@@ -34,12 +36,13 @@
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
-    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=87e54e7c" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
+  <!-- So that users can add custom icons -->
+  <script src="_static/scripts/fontawesome.js?digest=26a4bc78f4c0ddb94549"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
-  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549" />
 
     <script src="_static/documentation_options.js?v=9eb32ce0"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
@@ -65,6 +68,7 @@
     <link rel="next" title="The role of noise in GPs" href="content/gp_pred_comp/intro.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
   </head>
   
   
@@ -80,19 +84,8 @@
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
 
   
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-primary-sidebar-checkbox"/>
-  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
-  
-  <input type="checkbox"
-          class="sidebar-toggle"
-          id="pst-secondary-sidebar-checkbox"/>
-  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
-  
-  <div class="search-button__wrapper">
-    <div class="search-button__overlay"></div>
-    <div class="search-button__search-container">
+  <dialog id="pst-search-dialog">
+    
 <form class="bd-search d-flex align-items-center"
       action="search.html"
       method="get">
@@ -100,7 +93,6 @@
   <input type="search"
          class="form-control"
          name="q"
-         id="search-input"
          placeholder="Search this book..."
          aria-label="Search this book..."
          autocomplete="off"
@@ -108,8 +100,8 @@
          autocapitalize="off"
          spellcheck="false"/>
   <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form></div>
-  </div>
+</form>
+  </dialog>
 
   <div class="pst-async-banner-revealer d-none">
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
@@ -127,7 +119,8 @@
       
         
       
-      <div class="bd-sidebar-primary bd-sidebar">
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -157,21 +150,17 @@
     
     
     <img src="_static/logo.png" class="logo__image only-light" alt="gp_playground - Home"/>
-    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="gp_playground - Home"/>`);</script>
+    <img src="_static/logo.png" class="logo__image only-dark pst-js-only" alt="gp_playground - Home"/>
   
   
 </a></div>
         <div class="sidebar-primary-item">
 
- <script>
- document.write(`
-   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <span class="search-button__default-text">Search</span>
-    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-   </button>
- `);
- </script></div>
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         
@@ -317,24 +306,16 @@
 
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
-    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
-    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
-    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
-  </button>
-`);
-</script>
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
 
 
-<script>
-document.write(`
-  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <i class="fa-solid fa-magnifying-glass fa-lg"></i>
-  </button>
-`);
-</script>
+</button>
 <button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
     <span class="fa-solid fa-list"></span>
 </button>
@@ -406,16 +387,21 @@ regularization parameter <span class="math notranslate nohighlight">\(\lambda\)<
 <li><p>Our own</p>
 <ul>
 <li><p><a class="reference external" href="https://figshare.com/articles/presentation/Introduction_to_kernel_methods_and_Gaussian_processes/22032650">Intro to GPs and kernel methods talk</a></p></li>
-<li><p><a class="reference external" href="https://figshare.com/articles/presentation/Introduction_to_Gaussian_processes/25988176">GP talk</a> (new)</p></li>
+<li><p><a class="reference external" href="https://figshare.com/articles/presentation/Introduction_to_Gaussian_processes/25988176">GP talk</a></p></li>
+<li><p><a class="reference external" href="https://figshare.com/articles/presentation/Uncertainty_Quantification_for_Neural_Networks_Make_your_model_predictions_trustworthy/27891222">Uncertainty Quantification for Neural Networks (with GP intro)</a></p></li>
 </ul>
 </li>
 <li><p><a class="reference external" href="https://gregorygundersen.com/blog/2020/01/06/kernel-gp-regression">Blog post about GP vs. KRR</a></p></li>
 <li><p><a class="reference internal" href="content/gp_pred_comp/intro.html#s-gp-pred-noise"><span class="std std-ref">This section</span></a> was inspired by a <a class="reference external" href="https://github.com/scikit-learn/scikit-learn/issues/22945">discussion over at the sklearn issue
 tracker</a>. Thanks!</p></li>
-<li><p>Books and publications listed below: <span id="id2">[<a class="reference internal" href="#id4" title="Marc Peter Deisenroth, Yicheng Luo, and Mark van der Wilk. A practical guide to gaussian processes. 2020. URL: https://infallible-thompson-49de36.netlify.app/ (visited on 2020-12-03).">DLvdW20</a>, <a class="reference internal" href="#id5" title="Jochen Görtler, Rebecca Kehlbeck, and Oliver Deussen. A Visual Exploration of Gaussian Processes. 2019. URL: https://distill.pub/2019/visual-exploration-gaussian-processes (visited on 2022-11-22), doi:10.23915/distill.00017.">GKD19</a>, <a class="reference internal" href="#id6" title="Motonobu Kanagawa, Philipp Hennig, Dino Sejdinovic, and Bharath K. Sriperumbudur. Gaussian Processes and Kernel Methods: A Review on Connections and Equivalences. 2018. URL: http://arxiv.org/abs/1807.02582, arXiv:1807.02582.">KHSS18</a>, <a class="reference internal" href="#id7" title="Kevin P. Murphy. Probabilistic Machine Learning: Advanced Topics (draft version). MIT Press, 2022. URL: https://probml.github.io/pml-book/book2.html.">Mur22</a>, <a class="reference internal" href="#id8" title="Carl Edward Rasmussen and Christopher K. I. Williams. Gaussian Processes for Machine Learning. MIT Press, 2006. ISBN ISBN-10 0-262-18253-X. URL: http://www.gaussianprocess.org/gpml.">RW06</a>]</span></p></li>
+<li><p>Books and publications listed below: <span id="id2">[<a class="reference internal" href="#id9" title="Christopher Bishop. Pattern Recognition and Machine Learning. Springer, 2006. URL: https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/.">Bis06</a>, <a class="reference internal" href="#id4" title="Marc Peter Deisenroth, Yicheng Luo, and Mark van der Wilk. A practical guide to gaussian processes. 2020. URL: https://infallible-thompson-49de36.netlify.app/ (visited on 2020-12-03).">DLvdW20</a>, <a class="reference internal" href="#id5" title="Jochen Görtler, Rebecca Kehlbeck, and Oliver Deussen. A Visual Exploration of Gaussian Processes. 2019. URL: https://distill.pub/2019/visual-exploration-gaussian-processes (visited on 2022-11-22), doi:10.23915/distill.00017.">GKD19</a>, <a class="reference internal" href="#id6" title="Motonobu Kanagawa, Philipp Hennig, Dino Sejdinovic, and Bharath K. Sriperumbudur. Gaussian Processes and Kernel Methods: A Review on Connections and Equivalences. 2018. URL: http://arxiv.org/abs/1807.02582, arXiv:1807.02582.">KHSS18</a>, <a class="reference internal" href="#id7" title="Kevin P. Murphy. Probabilistic Machine Learning: Advanced Topics. MIT Press, 2023. URL: https://probml.github.io/pml-book/book2.html.">Mur23</a>, <a class="reference internal" href="#id8" title="Carl Edward Rasmussen and Christopher K. I. Williams. Gaussian Processes for Machine Learning. MIT Press, 2006. ISBN ISBN-10 0-262-18253-X. URL: http://www.gaussianprocess.org/gpml.">RW06</a>]</span></p></li>
 </ul>
 <div class="docutils container" id="id3">
 <div role="list" class="citation-list">
+<div class="citation" id="id9" role="doc-biblioentry">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Bis06</a><span class="fn-bracket">]</span></span>
+<p>Christopher Bishop. <em>Pattern Recognition and Machine Learning</em>. Springer, 2006. URL: <a class="reference external" href="https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/">https://www.microsoft.com/en-us/research/publication/pattern-recognition-machine-learning/</a>.</p>
+</div>
 <div class="citation" id="id4" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">DLvdW20</a><span class="fn-bracket">]</span></span>
 <p>Marc Peter Deisenroth, Yicheng Luo, and Mark van der Wilk. A practical guide to gaussian processes. 2020. URL: <a class="reference external" href="https://infallible-thompson-49de36.netlify.app/">https://infallible-thompson-49de36.netlify.app/</a> (visited on 2020-12-03).</p>
@@ -429,8 +415,8 @@ tracker</a>. Thanks!</p></li>
 <p>Motonobu Kanagawa, Philipp Hennig, Dino Sejdinovic, and Bharath K. Sriperumbudur. Gaussian Processes and Kernel Methods: A Review on Connections and Equivalences. 2018. URL: <a class="reference external" href="http://arxiv.org/abs/1807.02582">http://arxiv.org/abs/1807.02582</a>, <a class="reference external" href="https://arxiv.org/abs/1807.02582">arXiv:1807.02582</a>.</p>
 </div>
 <div class="citation" id="id7" role="doc-biblioentry">
-<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Mur22</a><span class="fn-bracket">]</span></span>
-<p>Kevin P. Murphy. <em>Probabilistic Machine Learning: Advanced Topics (draft version)</em>. MIT Press, 2022. URL: <a class="reference external" href="https://probml.github.io/pml-book/book2.html">https://probml.github.io/pml-book/book2.html</a>.</p>
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">Mur23</a><span class="fn-bracket">]</span></span>
+<p>Kevin P. Murphy. <em>Probabilistic Machine Learning: Advanced Topics</em>. MIT Press, 2023. URL: <a class="reference external" href="https://probml.github.io/pml-book/book2.html">https://probml.github.io/pml-book/book2.html</a>.</p>
 </div>
 <div class="citation" id="id8" role="doc-biblioentry">
 <span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">RW06</a><span class="fn-bracket">]</span></span>
@@ -507,7 +493,8 @@ entry</p>
             
             
               
-                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
 
   <div class="sidebar-secondary-item">
@@ -565,8 +552,8 @@ By Steve Schmerler
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=26a4bc78f4c0ddb94549"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=26a4bc78f4c0ddb94549"></script>
 
   <footer class="bd-footer">
   </footer>
