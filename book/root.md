@@ -34,7 +34,7 @@ Notation:
 * [Blog post about GP vs. KRR][gp_krr_blog]
 * [This section](s:gp_pred_noise) was inspired by a [discussion over at the sklearn issue
   tracker][sklearn_issue]. Thanks!
-* Books and publications listed below: {cite}`rasmussen_2006_GaussianProcessesMachine, murphy_2023_ProbabilisticMachineLearningAdvanced, goertler_2019_VisualExplorationGaussiana, deisenroth_2020_PracticalGuideGaussian, kanagawa_2018_GaussianProcessesKernel`
+* Books and publications listed below: {cite}`rasmussen_2006_GaussianProcessesMachine, bishop_2006_PatternRecognitionMachine, murphy_2023_ProbabilisticMachineLearningAdvanced, goertler_2019_VisualExplorationGaussiana, deisenroth_2020_PracticalGuideGaussian, kanagawa_2018_GaussianProcessesKernel`
 
 
 ```{bibliography}
