@@ -29,7 +29,8 @@ Notation:
 
 * Our own
   * [Intro to GPs and kernel methods talk][talk_gp_krr]
-  * [GP talk][talk_gp] (new)
+  * [GP talk][talk_gp]
+  * [Uncertainty Quantification for Neural Networks (with GP intro)][talk_nn_uq]
 * [Blog post about GP vs. KRR][gp_krr_blog]
 * [This section](s:gp_pred_noise) was inspired by a [discussion over at the sklearn issue
   tracker][sklearn_issue]. Thanks!
@@ -63,6 +64,7 @@ or [the DOI `10.5281/zenodo.7439202`][doi].
 [sklearn_issue]: https://github.com/scikit-learn/scikit-learn/issues/22945
 [talk_gp_krr]: https://figshare.com/articles/presentation/Introduction_to_kernel_methods_and_Gaussian_processes/22032650
 [talk_gp]: https://figshare.com/articles/presentation/Introduction_to_Gaussian_processes/25988176
+[talk_nn_uq]: https://figshare.com/articles/presentation/Uncertainty_Quantification_for_Neural_Networks_Make_your_model_predictions_trustworthy/27891222
 [license]: https://github.com/elcorto/gp_playground/blob/main/LICENSE
 [doi]: https://zenodo.org/doi/10.5281/zenodo.7439202
 [^fn:excuse]: And is an excuse to play with JupyterBook.
