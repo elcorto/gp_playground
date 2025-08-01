@@ -10,7 +10,6 @@
 #
 # * [tinygp](https://github.com/dfm/tinygp)
 # * [sklearn](https://scikit-learn.org)
-# * [GPy](https://github.com/SheffieldML/GPy)
 # * [gpytorch](https://gpytorch.ai)
 #
 # We perform the same calculations with all libraries and compare to the results
@@ -151,51 +150,6 @@ compare_tinygp(cond.gp, text_pos_noise)
 
 
 # %% [markdown]
-# ## GPy
-
-# %%
-
-# =========================================================================
-# GPy
-# =========================================================================
-
-# Can't convince GPy to be more accurate than atol / rtol. There must be
-# hidden jitter defaults lurking around.
-
-
-def compare_gpy(pred_func, text_gp):
-    gp_mean, gp_cov = pred_func(X_pred, full_cov=True)
-    y_mean, y_std, y_cov = text_gp
-    np.testing.assert_allclose(y_mean, gp_mean[:, 0])
-    np.testing.assert_allclose(y_std, cov2std(gp_cov))
-    np.testing.assert_allclose(y_cov, gp_cov, rtol=1e-4)
-
-
-# posterior
-import GPy
-
-gpy_kernel = GPy.kern.RBF(
-    input_dim=X_train.shape[1],
-    lengthscale=length_scale,
-    variance=1,
-    inv_l=True,
-)
-gp = GPy.models.GPRegression(
-    X_train,
-    y_train[:, None],
-    gpy_kernel,
-    normalizer=False,
-    noise_var=noise_level,
-)
-
-# predict_noiseless()
-compare_gpy(gp.predict_noiseless, text_pos)
-
-# predict(): y_cov has noise_level added to the diag
-compare_gpy(gp.predict, text_pos_noise)
-
-
-# %% [markdown]
 # ## GPyTorch
 
 # %%
@@ -268,7 +222,6 @@ with (
     ##    default=T.float64, symeig=T.float64, cholesky=T.float64
     ##),
 ):
-
     # prior w/o noise: model.forward()
     gp = model.forward(T.from_numpy(X_pred))
     compare_gpytorch(gp, text_pri)
