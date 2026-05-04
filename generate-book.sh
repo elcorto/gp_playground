@@ -53,7 +53,8 @@ for src in $src_files; do
     echo "---> src: $src"
     tgt=$(echo $src | sed -re 's/\.py$/\.md/')
     echo "---> tgt: $tgt"
-    jupytext --from py:percent --to md:myst --set-kernel python3 $src
+    ##jupytext --from py:percent --to md:myst --set-kernel python3 $src
+    jupytext --to md:myst --set-kernel python3 $src
     sed -i -re 's/^#.*(:tags:)/\1/g' $tgt
 done
 
