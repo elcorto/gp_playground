@@ -2,8 +2,9 @@
 
 book_dir=book
 
-# Pass /path/to/notebook_foo.py to jupytext only that and rebuild w/o purging
-# and rebuilding everything.
+# Pass /path/to/notebook_foo.py as argument to process only updates made to
+# this file and use cached data for the rest. The default is to purge and
+# rebuild everything.
 if [ $# -gt 0 ]; then
     src_files=$@
 else
@@ -52,11 +53,8 @@ for src in $src_files; do
     echo "---> src: $src"
     tgt=$(echo $src | sed -re 's/\.py$/\.md/')
     echo "---> tgt: $tgt"
-    jupytext --from py:percent --to md:myst --set-kernel python3  $src
+    jupytext --from py:percent --to md:myst --set-kernel python3 $src
     sed -i -re 's/^#.*(:tags:)/\1/g' $tgt
-    ##jupytext --from md:myst --to ipynb --set-kernel python3 --execute $tgt
-    ##jupytext --set-kernel python3 --execute $tgt
 done
 
-####jb build --all $book_dir
-jb build $book_dir
+jupyter-book build $book_dir
