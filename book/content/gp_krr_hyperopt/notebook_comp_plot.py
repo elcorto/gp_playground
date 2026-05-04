@@ -307,8 +307,8 @@ de_kwds_common = dict(
     tol=0.001,
     popsize=20,
     maxiter=10000,
-    workers=-1,
-    updating="deferred",
+    workers=1,
+    updating="immediate",
     seed=seed,
 )
 
@@ -538,7 +538,6 @@ for icol, name in enumerate(cases):
 
         params_opt = params_krr
     elif name == "gp":
-
         # Use a fitted GP object from above that has RBF+WhiteKernel such
         # that we can call log_marginal_likelihood() with a length 2 param
         # array.
