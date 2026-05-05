@@ -13,7 +13,7 @@
 #     name: python3
 # ---
 
-# # 2D regression
+# # 2D exact GP regression
 #
 # In this notebook, we use a GP to fit a 2D data set. We use the same ExactGP
 # machinery as in the 1D case and show how GPs can be used for 2D interpolation

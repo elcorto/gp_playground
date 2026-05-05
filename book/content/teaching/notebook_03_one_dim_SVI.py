@@ -13,7 +13,7 @@
 #     name: bayes-ml-course
 # ---
 
-# # Sparse Stochastic Variational Inference
+# # 1D approximate GP regression using Sparse Stochastic Variational Inference
 #
 # In this notebook, we replace the `ExactGP` inference and log marginal
 # likelihood optimization by Sparse Stochastic Variational Inference.
