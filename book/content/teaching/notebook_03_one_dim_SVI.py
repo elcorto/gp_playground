@@ -138,7 +138,8 @@ if is_interactive():
 # * learnable parameters $\ve m_u$ and $\ma L$ of the variational
 #   distribution $q_{\ve\psi}(\ve u)=\mathcal N(\ve m_u, \ma S)$: the
 #   variational mean $\ve m_u$ and covariance $\ma S$ in form a lower triangular
-#   matrix $\ma L$ such that $\ma S=\ma L\,\ma L^\top$
+#   matrix $\ma L$ such that $\ma S=\ma L\,\ma L^\top$ (Cholesky decomposition
+#   of $\ma S$, so we store only $\ma L$)
 #
 # In the code below:
 #

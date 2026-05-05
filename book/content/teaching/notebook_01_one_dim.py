@@ -19,6 +19,10 @@
 # slides](https://doi.org/10.6084/m9.figshare.25988176) with code, using the
 # [gpytorch](https://gpytorch.ai) library. We cover exact GP inference and
 # hyper parameter optimization using the marginal likelihood.
+#
+# The notebook is inspired by the [Exact GP Regression
+# example](https://docs.gpytorch.ai/en/stable/examples/01_Exact_GPs/Simple_GP_Regression.html)
+# from the [`gpytorch` docs](https://docs.gpytorch.ai).
 
 
 # ## Notation
