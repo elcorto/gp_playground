@@ -33,7 +33,7 @@ $ pip install -r requirements.txt
 $ (bayes-ml-course-sys) python -m ipykernel install --name bayes-ml-course --sys-prefix
 
 # This script converts all *.py to *.ipynb
-$ (bayes-ml-course-sys) ./py-to-notebook.py
+$ (bayes-ml-course-sys) ./py-to-notebook.sh
 
 # Start Jupyter
 $ (bayes-ml-course-sys) jupyter-lab notebook_01_one_dim.ipynb
