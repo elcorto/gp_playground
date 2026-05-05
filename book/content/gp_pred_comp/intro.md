@@ -7,10 +7,10 @@ posterior predictive covariance matrix. When learning a noise model
 are two flavors of that covariance matrix. Borrowing from the `GPy` library's
 naming scheme, we have
 
-* `predict_noiseless`: $\cov(\ve f_*)$
-* `predict`: $\cov(\ve f_*) + \sigma_n^2\,\ma I$
+* `predict_noiseless`: $\cov(\predve f_*)$
+* `predict`: $\cov(\predve f_*) + \sigma_n^2\,\ma I$
 
-where $\cov(\ve f_*)$ is the posterior predictive covariance matrix
+where $\cov(\predve f_*)$ is the posterior predictive covariance matrix
 ({cite}`rasmussen_2006_GaussianProcessesMachine` eq. 2.24). These lead to
 different uncertainty estimates and posterior samples, as will be shown.
 
