@@ -13,11 +13,14 @@ html:
   use_repository_button: True
 
 execute:
+  # Only execute myst .md format notebooks
   exclude_patterns:
     - '*.py'
-    ##- '*plot.md'
+    - '*.ipynb'
     - 'notebook_test.md'
   execute_notebooks: auto
+  # default is 30 sec, maybe too slow on some weak machines or in CI
+  timeout: 120
 
 parse:
   # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
