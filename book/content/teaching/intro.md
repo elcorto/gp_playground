@@ -1,0 +1,6 @@
+# Teaching material
+
+**Contents**
+
+```{tableofcontents}
+```
