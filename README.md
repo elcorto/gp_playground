@@ -9,24 +9,23 @@
 This project uses [Jupyter Book](https://jupyterbook.org) and
 [jupytext](https://jupytext.readthedocs.io). To build locally, follow the instructions below or check the CI pipline.
 
+Use
+
 ```sh
 # https://virtualenvwrapper.readthedocs.io/en/latest/
 $ mkvirtualenv gp_play
 ```
 
-else
+or
 
 ```sh
 $ python3 -m venv gp_play && . ./gp_play/bin/activate
 ```
 
-Then install some variant of torch (CPU, GPU) plus the packages that we test
-here. The torch install line is just an example, please check the pytorch
-website for more.
-
-We need this only for gpytorch. Comment this out in
-`book/content/gp_pred_comp/notebook_comp.py` to skip. Examples are tiny, so
-there is no need to install the GPU version of torch.
+Then install some variant of `torch` (CPU, GPU) plus the packages that we test
+here. The `torch` install line is just an example, please check the pytorch
+website for more. Examples are tiny, so there is no need to install the GPU
+version of `torch`.
 
 ```sh
 (gp_play) $ pip install torch --extra-index-url https://download.pytorch.org/whl/cpu
@@ -39,11 +38,11 @@ Build
 (gp_play) $ ./generate-book.sh
 
 # If you only modified some notebook scripts (we use jupytext in the
-# background), pass their names. Else the script will purge are rebuild all.
+# background), pass their names. Else the script will purge and rebuild all.
 (gp_play) $ ./generate-book.sh book/content/gp_pred_comp/notebook_comp.py
 
 # If you only changed markdown files
-(gp_play) $ jb build book
+(gp_play) $ jupyter-book build book
 ```
 
 View
