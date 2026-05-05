@@ -13,7 +13,7 @@
 #     name: bayes-ml-course
 # ---
 
-# # 1D regression
+# # 1D exact GP regression
 #
 # In this notebook, we explore the material presented in [the
 # slides](https://doi.org/10.6084/m9.figshare.25988176) with code, using the
