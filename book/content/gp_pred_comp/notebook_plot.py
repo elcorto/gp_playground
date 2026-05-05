@@ -9,11 +9,11 @@
 # perform a "real GP fit" by optimizing the $\ell$ hyperparameter. However we fix
 # $\sigma_n^2$ to certain values to showcase the different noise cases.
 #
-# Below $\ma\Sigma\equiv\cov(\ve f_*)$ is the covariance matrix from
+# Below $\ma\Sigma\equiv\cov(\predve f_*)$ is the covariance matrix from
 # {cite}`rasmussen_2006_GaussianProcessesMachine` eq. 2.24 with $\ma K =
-# K(X,X)$, $\ma K'=K(X_*, X)$ and $\ma K''=K(X_*, X_*)$, so
+# K(X,X)$, $\ma K_{*}=K(X_*, X)$ and $\ma K_{**}=K(X_*, X_*)$, so
 #
-# $$\ma\Sigma = \ma K'' - \ma K'\,(\ma K+\sigma_n^2\,\ma I)^{-1}\,\ma K'^\top$$
+# $$\ma\Sigma = \ma K_{**} - \ma K_{*}\,(\ma K+\sigma_n^2\,\ma I)^{-1}\,\ma K_{*}^\top$$
 
 
 # %% [markdown]
@@ -130,14 +130,14 @@ def calc_gp(
 
     if pri_post == "pri":
         if noise_level == 0:
-            cov_title = r"$\Sigma=K''$"
+            cov_title = r"$\Sigma=K_{**}$"
         else:
-            cov_title = r"$\Sigma=K'' + \sigma_n^2\,I$"
+            cov_title = r"$\Sigma=K_{**} + \sigma_n^2\,I$"
     else:
         if noise_level == 0:
-            cov_title = r"$\Sigma=K'' - K'\,K^{-1}\,K'^\top$"
+            cov_title = r"$\Sigma=K_{**} - K_{*}\,K^{-1}\,K_{*}^\top$"
         else:
-            cov_title = r"$\Sigma=K'' - K'\,(K+\sigma_n^2\,I)^{-1}\,K'^\top$"
+            cov_title = r"$\Sigma=K_{**} - K_{*}\,(K+\sigma_n^2\,I)^{-1}\,K_{*}^\top$"
 
     cov_title += "\n" + rf"$\sigma$={y_std_label}"
 
@@ -253,7 +253,7 @@ _ = ax.set_ylim(*y_lim)
 # ## Prior, noisy
 #
 # Even though not super useful, we can certainly generate noisy prior samples
-# in the `predict` setting when using $\ma K'' + \sigma_n^2\,\ma I$ as prior
+# in the `predict` setting when using $\ma K_{**} + \sigma_n^2\,\ma I$ as prior
 # covariance.
 #
 # This is also shown in {cite}`deisenroth_2020_PracticalGuideGaussian` in fig. 4.
@@ -366,7 +366,7 @@ _ = ax.set_ylim(*y_lim)
 # constant even though the constant $\sigma_n^2$ is added to the diagonal
 # because of the $\sqrt{\cdot}$ in
 #
-# $$\sigma = \sqrt{\mathrm{diag}(\cov(\ve f_*) + \sigma_n^2\ma I)}$$
+# $$\sigma = \sqrt{\mathrm{diag}(\cov(\predve f_*) + \sigma_n^2\ma I)}$$
 
 
 # %%
