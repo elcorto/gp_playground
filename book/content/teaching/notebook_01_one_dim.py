@@ -87,7 +87,7 @@ torch.manual_seed(123)
 #
 # Here we generate noisy 1D data `X_train`, `y_train` as well as an extended
 # x-axis `X_pred` which we use later for prediction also outside of the data
-# range (extrapolation). The data has a constant offset `const` which we use to
+# range (extrapolation). The data has a  = 5constant offset `const` which we use to
 # test learning a GP mean function $m(\ve x)$. We create a gap in the data to
 # show how the model uncertainty will behave there.
 
@@ -253,15 +253,17 @@ if is_interactive():
 # $\predve f$'s mean is equal to $c$. Instead, we have that at each $\ve x_i$,
 # the mean of *all* sampled functions is the same, so $\frac{1}{M}\sum_{j=1}^M
 # f_m(\ve x_i) \approx c$ and for $M\rightarrow\infty$ it will be exactly $c$.
-#
 
-# Look at the first 20 x points from M=10 samples
+
+# Let's look at the first 20 $x$ points from $M=10$ samples.
+
 print(f"{f_samples.shape=}")
 print(f"{f_samples.mean(axis=0)[:20]=}")
 print(f"{f_samples.mean(axis=0).mean()=}")
 print(f"{f_samples.mean(axis=0).std()=}")
 
-# Take more samples, the means should get closer to c
+# Take more samples, the means should get closer to $c=3$.
+
 f_samples = pri_f.sample(sample_shape=torch.Size((M * 200,)))
 print(f"{f_samples.shape=}")
 print(f"{f_samples.mean(axis=0)[:20]=}")
@@ -337,7 +339,7 @@ if is_interactive():
 
 # We observe that all sampled functions (green) and the mean (red) tend towards
 # the low fixed mean function $m(\ve x)=c$ at 3.0 in the absence of data, while
-# the actual data mean is `const` from above (data generation). Also the other
+# the actual data mean is `const = 5` from above (data generation). Also the other
 # hyper params ($\ell$, $\sigma_n^2$, $s$) are just guesses. Now we will
 # calculate their actual value by minimizing the negative log marginal
 # likelihood.
