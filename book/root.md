@@ -1,31 +1,17 @@
-**About**
+# GP Playground
 
-This project explores selected aspects of Gaussian processes (GPs) by
-implementing them (a.k.a. "learning by hacking").[^fn:excuse]
+This project is an educational resource which explores selected aspects of
+Gaussian processes (GPs). It also provides teaching material which has been
+used in several iterations of [this online
+course](https://indico3-jsc.fz-juelich.de/event/279/overview).
 
-**Content**
+## Contents
 
 ```{tableofcontents}
 ```
 
 
-**GP intro**
-
-Unless stated otherwise, we use the Gaussian radial basis function (a.k.a.
-squared exponential) as covariance ("kernel") function
-
-$$\kappa(\ve x_i, \ve x_j) = \exp\left(-\frac{\lVert\ve x_i - \ve x_j\rVert_2^2}{2\,\ell^2}\right)$$
-
-
-Notation:
-
-* RBF kernel length scale parameter: $\ell$ = `length_scale` (as in sklearn)
-* likelihood variance $\sigma_n^2$ (a.k.a. "noise level") in GPs,
-  regularization parameter $\lambda$ in KRR: $\eta$ = `noise_level` (as in `sklearn`)
-* posterior predictive variance: $\sigma^2$
-
-
-**Resources**
+## Resources
 
 * Our own
   * [Intro to GPs and kernel methods talk][talk_gp_krr]
@@ -40,7 +26,7 @@ Notation:
 ```{bibliography}
 ```
 
-**Citing**
+## Citing
 
 The [source code](https://github.com/elcorto/gp_playground) and this book are
 licensed under the [BSD 3-Clause License][license]. If you re-use material
@@ -67,4 +53,3 @@ or [the DOI `10.5281/zenodo.7439202`][doi].
 [talk_nn_uq]: https://figshare.com/articles/presentation/Uncertainty_Quantification_for_Neural_Networks_Make_your_model_predictions_trustworthy/27891222
 [license]: https://github.com/elcorto/gp_playground/blob/main/LICENSE
 [doi]: https://zenodo.org/doi/10.5281/zenodo.7439202
-[^fn:excuse]: And is an excuse to play with JupyterBook.
