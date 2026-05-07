@@ -20,8 +20,8 @@
 # This serves as an example of the many methods `gpytorch` offers to make GPs
 # scale to large data sets.
 #
-# The method goes by different acronyms sometimes, which skip the "Sparse"
-# aspect for some reason, such as (SVI = Stochastic Variational Inference,
+# The method goes by different acronyms, some of which skip the "Sparse"
+# aspect, such as (SVI = Stochastic Variational Inference,
 # SVGP = Stochastic Variational GP Regression).
 # $\newcommand{\ve}[1]{\mathit{\boldsymbol{#1}}}$
 # $\newcommand{\ma}[1]{\mathbf{#1}}$

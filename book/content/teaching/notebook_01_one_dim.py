@@ -85,11 +85,12 @@ torch.manual_seed(123)
 
 # ## Generate toy 1D data
 #
-# Here we generate noisy 1D data `X_train`, `y_train` as well as an extended
-# x-axis `X_pred` which we use later for prediction also outside of the data
-# range (extrapolation). The data has a  = 5constant offset `const` which we use to
-# test learning a GP mean function $m(\ve x)$. We create a gap in the data to
-# show how the model uncertainty will behave there.
+# Here we generate noisy 1D data $\ma X$ = `X_train`, $\ve y$ = `y_train` as
+# well as an extended x-axis $\test{\ma X}$ = `X_pred` which we use later for
+# prediction also outside of the data range (extrapolation). The data has a
+# constant offset `const` which we use to test learning a GP mean function
+# $m(\ve x)$. We create a gap in the data to show how the model uncertainty
+# will behave there.
 
 
 # +
@@ -204,15 +205,18 @@ pprint(extract_model_params(model))
 # ## Sample from the GP prior
 #
 # We sample a number of functions $f_m, m=1,\ldots,M$ from the GP prior and
-# evaluate them at all $\ma X$ = `X_pred` points, of which we have $N=200$. So
-# we effectively generate samples from `pri_f` =  $p(\predve f|\ma X) = \mathcal N(\ve
-# c, \ma K)$. Each sampled vector $\predve f\in\mathbb R^{N}$ represents a
-# sampled *function* $f$ evaluated the $N=200$ points in $\ma X$. The
-# covariance (kernel) matrix is $\ma K\in\mathbb R^{N\times N}$. Its diagonal
-# $\diag\ma K$ = `f_std**2` represents the variance at each point on the $x$-axis.
-# This is what we plot as "confidence band" `f_mean` $\pm$ `2 * f_std`.
-# The off-diagonal elements represent the correlation between different points
-# $K_{ij} = \cov[f(\ve x_i), f(\ve x_j)]$.
+# evaluate them at all $\test{\ma X}$ = `X_pred` points, of which we have
+# $\test{N}=200$. So we effectively generate samples from `pri_f` =
+# $p(\test{\predve f}|\test{\ma X}) = \mathcal N(\ve c, \testtest{\ma K})$.
+# Each sampled vector $\test{\predve f}\in\mathbb R^{\test{N}}$ represents a
+# sampled *function* $f_m$ evaluated at the $\test{N}=200$ points in $\test{\ma
+# X}$. The covariance (kernel) matrix is $\testtest{\ma K}\in\mathbb
+# R^{\test{N}\times \test{N}}$ with $(\testtest{\ma K})_{ij}=\cov[f_m(\ve x_i), f_m(\ve
+# x_j)]$. Its diagonal $\diag\testtest{\ma K}$ =
+# `f_std**2` represents the variance at each point on the $x$-axis. This is
+# what we plot as "confidence band" `f_mean` $\pm$ `2 * f_std`. The
+# off-diagonal elements represent the correlation between different points
+# along the $x$-axis.
 
 # +
 model.eval()
@@ -249,8 +253,8 @@ if is_interactive():
 
 # Let's investigate the samples more closely. First we note that the samples
 # fluctuate around the mean `model.mean_module.constant` we defined above. A
-# constant mean $\ve m(\ma X) = \ve c$ does *not* mean that each sampled vector
-# $\predve f$'s mean is equal to $c$. Instead, we have that at each $\ve x_i$,
+# constant mean $\ve m(\test{\ma X}) = \ve c$ does *not* mean that each sampled vector
+# $\test{\predve f}$'s mean is equal to $c$. Instead, we have that at each $\ve x_i$,
 # the mean of *all* sampled functions is the same, so $\frac{1}{M}\sum_{j=1}^M
 # f_m(\ve x_i) \approx c$ and for $M\rightarrow\infty$ it will be exactly $c$.
 
