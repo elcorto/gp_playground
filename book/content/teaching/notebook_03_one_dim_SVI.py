@@ -62,10 +62,11 @@ torch.manual_seed(123)
 # ## Generate toy 1D data
 #
 # Now we generate 10x more points as in the `ExactGP` case, still the inference
-# won't be much slower (exact GPs scale roughly as $N^3$). Note that the data we
-# use here is still tiny (1000 points is easy even for exact GPs), so the
-# method's usefulness cannot be fully exploited with our small scale example
-# -- also we don't even use a GPU yet :).
+# (calculate posterior predictive distribution) and prediction won't be much
+# slower (exact GPs scale roughly as $N^3$). Note that the data we use here is
+# still tiny (1000 points is easy even for exact GPs), so the method's
+# usefulness cannot be fully exploited with our small scale example -- also we
+# don't even use a GPU yet :).
 
 
 # +
@@ -117,8 +118,9 @@ if is_interactive():
 # 2015](https://proceedings.mlr.press/v38/hensman15.html). The model is
 # "sparse" since it works with a set of *inducing* points $(\ma Z, \ve u),
 # \ve u=f(\ma Z)$ with $f$ the unknown ground truth function. This inducing points data set
-# is much smaller than the train data $(\ma X, \ve y)$, which makes the method
-# scale to large training data set sizes.
+# is much smaller than the train data $(\ma X, \ve y)$. At prediction time, the
+# model will use only this small data set instead of the full training data set
+# as vanilla GPs would. This makes prediction scale to large data sets.
 # See also [the GPJax
 # docs](https://docs.jaxgaussianprocesses.com/_examples/uncollapsed_vi) for a
 # nice introduction.
@@ -180,9 +182,9 @@ likelihood = gpytorch.likelihoods.GaussianLikelihood()
 
 # Now we initialize the model by defining optimization start values for the
 # inducing points $\ma Z$. We use a 5% random sub-sample of `X_train`, so we
-# effectively reduce the data size by a factor of 20. The learning process
-# (below) will find an optimal set of inducing points that approximately
-# represents the full dataset.
+# effectively reduce the data size used during prediction by a factor of 20. The
+# learning process (below) will find an optimal set of inducing points that
+# approximately represents the full dataset.
 
 n_train = len(X_train)
 ind_points_fraction = 0.05
@@ -255,8 +257,9 @@ likelihood.noise_covar.noise = 0.3
 # type mini-batch loop, hence "stochastic" variational inference (SVI). The
 # latter speeds up the optimization since we only look at a fraction of data
 # per optimizer step to calculate an approximate loss gradient
-# (`loss.backward()`). Next to using inducing points, this is the second
-# performance improvement technique of SVGP.
+# (`loss.backward()`). Next to using inducing points to speed up prediction, this
+# performance improvement technique makes it possible to *train* with large
+# amounts of data.
 
 # +
 # Train mode
@@ -418,6 +421,11 @@ with torch.no_grad():
 if is_interactive():
     plt.show()
 # -
+
+# We get a result which is very similar to the `ExactGP` case. Note that the
+# inducing points $\ma Z$ (initialized randomly uniform along $x$) are now
+# concentrated in the regions of high data density and not in the
+# out-of-distribution "gap" in the middle.
 
 # ## Let's check the learned noise
 
